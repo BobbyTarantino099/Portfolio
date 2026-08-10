@@ -1,0 +1,13 @@
+# Dependencias y artefactos de construccion
+node_modules/
+dist/
+.astro/
+
+# Entorno
+.env
+.env.production
+
+# Basura de SO / editores
+.DS_Store
+Thumbs.db
+*.log
