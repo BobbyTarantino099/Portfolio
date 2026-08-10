@@ -4,13 +4,11 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   // De aqui salen las URL absolutas: canonical y Open Graph. Tiene que apuntar
-  // SIEMPRE a donde el sitio esta publicado de verdad. Un valor de relleno le dice
-  // a Google que el contenido original vive en otro dominio, y puede dejar el sitio
-  // sin indexar.
-  // TODO(juanes): cambiar al dominio propio en cuanto este activo.
-  site: 'https://portfolio.juanesa2002.workers.dev',
+  // SIEMPRE a donde el sitio esta publicado de verdad, y ser una URL completa:
+  // sin el protocolo, Astro falla la construccion con "Invalid URL".
+  site: 'https://juanesportfolio.com',
 
-  // Salida estatica: no hay servidor. Cloudflare Pages sirve archivos.
+  // Salida estatica: no hay servidor. Cloudflare Workers sirve los archivos.
   output: 'static',
 
   build: {

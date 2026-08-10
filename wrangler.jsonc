@@ -12,5 +12,10 @@
   // Por eso NO hay campo "main" y NO hace falta el adaptador de Astro.
   "assets": {
     "directory": "./dist"
-  }
+  },
+
+  // El sitio responde solo en juanesportfolio.com. Sin esto seguiria contestando
+  // tambien en portfolio.juanesa2002.workers.dev, y serian dos URL con el mismo
+  // contenido: Google lo trata como duplicado y no sabe cual indexar.
+  "workers_dev": false
 }
