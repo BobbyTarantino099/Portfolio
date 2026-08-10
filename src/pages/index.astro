@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import CaseCard from '../components/CaseCard.astro';
+import { site } from '../site';
+
+const cases = (await getCollection('cases')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const featured = cases.filter((c) => c.data.featured);
+const rest = cases.filter((c) => !c.data.featured);
+---
+
+<Base title={site.name}>
+  <section class="intro prose">
+    <h1>{site.tagline}</h1>
+    <p>
+      Each case below starts from a decision someone had to make, runs on real data with its
+      cleaning documented step by step, and ends in recommendations that state their own limits.
+      The full evidence — logs, notebooks, reconciliation counts — lives in each case's repository.
+    </p>
+  </section>
+
+  <section aria-labelledby="work">
+    <h2 id="work" class="section-label">Selected work</h2>
+    <div class="cards">
+      {featured.map((entry) => <CaseCard entry={entry} />)}
+      {rest.map((entry) => <CaseCard entry={entry} />)}
+    </div>
+    {
+      cases.length === 0 && (
+        <p class="muted">No cases published yet.</p>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .intro {
+    margin-bottom: 3.5rem;
+  }
+
+  .intro h1 {
+    margin-bottom: 1rem;
+  }
+
+  .section-label {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin: 0 0 1.75rem;
+  }
+
+  .cards {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  /* La ultima tarjeta no necesita separador: ya viene el pie de pagina. */
+  .cards > :global(.card:last-child) {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+</style>

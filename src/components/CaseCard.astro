@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'cases'>;
+}
+
+const { entry } = Astro.props;
+const { title, summary, hero, heroAlt, tools, scale } = entry.data;
+const href = `/cases/${entry.id}/`;
+---
+
+<article class="card">
+  <a href={href} class="card-media" tabindex="-1" aria-hidden="true">
+    <Image src={hero} alt="" widths={[420, 840]} sizes="(max-width: 48rem) 100vw, 34rem" />
+  </a>
+
+  <div class="card-body">
+    <h2><a href={href}>{title}</a></h2>
+    <p class="muted">{summary}</p>
+    <ul class="tags">
+      {tools.map((tool) => <li class="tag">{tool}</li>)}
+      <li class="tag">{scale}</li>
+    </ul>
+    <p class="sr-note">{heroAlt}</p>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    gap: 1.25rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* El hallazgo se lee antes que el grafico en movil; en pantalla ancha van juntos. */
+  @media (min-width: 52rem) {
+    .card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      align-items: start;
+      gap: 2rem;
+    }
+    .card-media {
+      order: 2;
+    }
+    .card-body {
+      order: 1;
+    }
+  }
+
+  .card-media {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--figure-bg);
+    padding: var(--figure-pad);
+  }
+
+  .card h2 {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.55rem);
+  }
+
+  .card h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .card h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .card p {
+    margin: 0 0 0.9rem;
+    max-width: var(--measure);
+  }
+
+  /* La descripcion del grafico existe para lectores de pantalla; la imagen de la
+     tarjeta va con alt vacio para no leer dos veces lo mismo. */
+  .sr-note {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
