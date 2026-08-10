@@ -1,0 +1,16 @@
+{
+  // Nombre del proyecto en Cloudflare. Tiene que coincidir EXACTAMENTE con el
+  // "Project name" del panel, porque este archivo es el que manda al desplegar.
+  // Define tambien el subdominio gratuito: https://portfolio.<subdominio>.workers.dev
+  "name": "portfolio",
+
+  // Fecha que fija el comportamiento del runtime. No se toca salvo que quieras
+  // adoptar cambios nuevos de Cloudflare a proposito.
+  "compatibility_date": "2026-08-10",
+
+  // Sitio estatico: solo se sirven archivos, no hay codigo de servidor.
+  // Por eso NO hay campo "main" y NO hace falta el adaptador de Astro.
+  "assets": {
+    "directory": "./dist"
+  }
+}
