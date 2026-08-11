@@ -1,18 +1,16 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import TimelineEntry from '../components/TimelineEntry.astro';
 import portrait from '../assets/portrait.png';
 import { site } from '../site';
 
 /*
- * Bio escrita a partir del CV de Juan (Connext Global Solutions, Petrozones,
- * UNAB) y de sus respuestas: busca remoto internacional, ya trabaja con datos,
- * le atraen negocio y producto, y quiere que se le recuerde por traducir datos
- * a decisiones. Nada aquí está inventado — todo sale del CV o de lo que dijo.
+ * Todo el contenido sale del CV de Juan y de sus respuestas. Nada inventado.
  *
- * Lo que SÍ deja fuera a propósito: el objetivo del CV apunta a un puesto
- * concreto en banca local, y en el sitio dijo que busca remoto internacional.
- * Manda lo segundo.
+ * El hueco entre Petrozones (dic 2023) y Connext (oct 2024) queda a la vista con
+ * las fechas reales: decisión suya. Nueve meses no llaman la atención, y falsear
+ * fechas sí es un problema si alguien contrasta con LinkedIn.
  */
 
 const tools = {
@@ -23,7 +21,7 @@ const tools = {
 const facts = [
   { label: 'Based in', value: 'Bucaramanga, Colombia (UTC−5)' },
   { label: 'Languages', value: 'Spanish (native), English (C1)' },
-  { label: 'Studying', value: 'Systems Engineering, UNAB' },
+  { label: 'Certifications', value: 'Google Data Analytics · Financial Modeling (Excel) · Google Cloud Essentials' },
 ];
 ---
 
@@ -50,43 +48,84 @@ const facts = [
     </header>
 
     <div class="about-body">
-      <div class="bio measure">
-        <p class="lede">
-          I&rsquo;ve spent the last few years turning financial data into things people can decide
-          with. I build these case studies to show how I actually think — not just what tools I
-          can name.
+      <div class="bio">
+        <p class="lede measure">
+          I&rsquo;m a data analyst working on international banking portfolios, where the job is
+          usually to make a number both correct and readable by someone three timezones away. The
+          case studies on this site are where I practise that in public, on questions nobody
+          assigned me.
         </p>
 
-        <p>
-          I&rsquo;m a data analyst at <strong>Connext Global Solutions</strong>, working on
-          international banking portfolios: automating financial statements and cash-flow
-          reporting, building Power BI dashboards that track quarterly KPIs and covenant
-          compliance for stakeholders across several regions, and maintaining the Python and Azure
-          SQL pipelines underneath them. Before that I spent nearly three years at{' '}
-          <strong>Petrozones</strong> writing ETL scripts and building dashboards for operational
-          data.
-        </p>
+        <section class="experience" aria-labelledby="experience">
+          <h2 class="eyebrow" id="experience">Experience</h2>
+          <p class="hint">Expand a role to see what I built there.</p>
 
-        <p>
-          That work is where I learned the part I care most about: the last mile. Plenty of
-          analyses stop at an observation — a correlation, a chart, a number that moved. What
-          takes work is turning it into something a person can act on, with the limits of the
-          evidence stated plainly. When a covenant report goes to a stakeholder three timezones
-          away, it has to be right <em>and</em> it has to be readable without you in the room.
-        </p>
+          <ol class="timeline">
+            <TimelineEntry
+              period="Oct 2024 — Present"
+              role="Data Analyst"
+              org="Connext Global Solutions"
+              achievement="Automating financial reporting and covenant monitoring across international banking portfolios."
+              stack={['Python', 'Azure SQL', 'Power BI (DAX)', 'Advanced Excel', 'Power Query']}
+              open
+            >
+              <p>
+                I automate the reporting layer for cross-border lending portfolios: financial
+                statements, waterfall models and cash-flow reports that used to be assembled by
+                hand every cycle.
+              </p>
+              <p>
+                On top of that sit the executive dashboards — quarterly KPIs, payment distribution
+                and covenant compliance — that stakeholders in several regions read without me in
+                the room. Underneath, Python scripts and an Azure SQL database ingest and transform
+                the origination data, and the pipelines have to keep that data intact end to end.
+              </p>
+              <p>
+                Part of the work is watching contractual obligations and payment allocations to
+                cross-border originators, which is a good school for a habit I use everywhere: the
+                number has to survive someone checking it.
+              </p>
+            </TimelineEntry>
 
-        <p>
-          The case studies here are where I practise that in public, on questions nobody assigned
-          me. Each one starts from a decision someone had to make, documents every cleaning step
-          so it can be re-run from the raw file, and ends in recommendations that say what the
-          data supports and what it doesn&rsquo;t. The <a href="/method/">method</a> behind them
-          is written down too.
-        </p>
+            <TimelineEntry
+              period="Apr 2021 — Dec 2023"
+              role="Data Analyst"
+              org="Petrozones"
+              achievement="Built the ETL and reporting layer for operational data, cutting manual entry in half."
+              stack={['Python', 'MySQL', 'Power BI', 'Advanced Excel']}
+            >
+              <p>
+                I wrote the Python ETL that pulled data from APIs and CSV files, which removed
+                about half of the manual entry the team was doing. I also designed and tuned the
+                MySQL schemas and queries behind it.
+              </p>
+              <p>
+                The output was a set of Power BI dashboards combining several sources, plus weekly
+                business reports in Excel for operations and management. It was my first real
+                lesson in the difference between a report that exists and a report someone
+                actually uses.
+              </p>
+            </TimelineEntry>
 
-        <p>
+            <TimelineEntry
+              period="Expected Jul 2026"
+              role="Systems Engineering"
+              org="Universidad Autónoma de Bucaramanga"
+              achievement="Finishing the degree alongside full-time analyst work."
+            >
+              <p>
+                I&rsquo;ve been studying Systems and Computing Engineering while working full time.
+                It is where the engineering side of this comes from — databases, pipelines, and the
+                habit of treating an analysis as something that has to run again tomorrow.
+              </p>
+            </TimelineEntry>
+          </ol>
+        </section>
+
+        <p class="closing measure">
           I&rsquo;m looking for <strong>remote data analyst roles</strong> with teams that value a
           documented process. The fastest way to judge whether that&rsquo;s useful to you is to
-          read a case.
+          read a case — the <a href="/method/">method</a> behind them is written down too.
         </p>
       </div>
 
@@ -177,6 +216,45 @@ const facts = [
       align-items: start;
     }
   }
+
+  /* --- Experiencia --------------------------------------------------------- */
+
+  .experience {
+    margin-top: var(--space-2xl);
+  }
+
+  .experience h2 {
+    margin: 0;
+    font-family: var(--font-sans);
+    padding-bottom: var(--space-3xs);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hint {
+    margin: var(--space-2xs) 0 var(--space-l);
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  /* La línea vertical de la que cuelgan los puntos de cada entrada. */
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 var(--space-2xs);
+    border-left: 1px solid var(--rule);
+  }
+
+  .timeline > :global(.entry:last-child) {
+    padding-bottom: 0;
+  }
+
+  .closing {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* --- Barra lateral ------------------------------------------------------- */
 
   .about-side {
     display: grid;

@@ -1,0 +1,175 @@
+---
+/**
+ * Una entrada de la línea de tiempo de experiencia.
+ *
+ * Colapsada muestra fechas, puesto, organización y una línea de logro.
+ * Expandida añade el detalle y el stack.
+ *
+ * Usa <details>/<summary> nativos: el expandible funciona con teclado y sin
+ * JavaScript, igual que el índice del rail. El sitio sigue sin enviar un solo
+ * byte de JS.
+ */
+
+interface Props {
+  period: string;
+  role: string;
+  org: string;
+  /** La línea que se lee sin abrir la entrada. Un logro, no una responsabilidad. */
+  achievement: string;
+  stack?: string[];
+  /** El rol más reciente llega abierto. */
+  open?: boolean;
+}
+
+const { period, role, org, achievement, stack = [], open = false } = Astro.props;
+---
+
+<li class="entry">
+  <details open={open}>
+    <summary>
+      <span class="period">{period}</span>
+      <span class="role">
+        {role} <span class="sep" aria-hidden="true">·</span> <span class="org">{org}</span>
+      </span>
+      <span class="achievement">{achievement}</span>
+    </summary>
+
+    <div class="detail">
+      <slot />
+
+      {
+        stack.length > 0 && (
+          <ul class="tags stack">
+            {stack.map((s) => <li class="tag">{s}</li>)}
+          </ul>
+        )
+      }
+    </div>
+  </details>
+</li>
+
+<style>
+  .entry {
+    position: relative;
+    padding-left: var(--space-m);
+    padding-bottom: var(--space-l);
+  }
+
+  /* El punto sobre la línea vertical. La línea la dibuja el <ol> padre. */
+  .entry::before {
+    content: '';
+    position: absolute;
+    left: -0.3rem;
+    top: 0.42rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1.5px solid var(--ink-soft);
+  }
+
+  /* La entrada abierta marca dónde estás en la línea. */
+  .entry:has(details[open])::before {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  summary {
+    display: grid;
+    gap: var(--space-3xs);
+    cursor: pointer;
+    list-style: none;
+    /* Sitio a la derecha para el indicador +/− */
+    padding-right: var(--space-m);
+    position: relative;
+    /* Sin este tope el summary ocupa toda la columna y el +/− queda flotando
+       muy lejos del texto, como si no perteneciera a la entrada. */
+    max-width: var(--measure);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  summary::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: 0.1rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--ink-soft);
+    transition: color 120ms ease;
+  }
+
+  details[open] summary::after {
+    content: '−';
+  }
+
+  summary:hover::after {
+    color: var(--accent);
+  }
+
+  .period {
+    font-size: 0.72rem;
+    font-weight: 550;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--ink-soft);
+  }
+
+  .role {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-size: 1.12rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+  }
+
+  .sep {
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+
+  .org {
+    color: var(--ink-soft);
+  }
+
+  summary:hover .role {
+    color: var(--accent);
+  }
+
+  .achievement {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+
+  .detail {
+    margin-top: var(--space-s);
+    font-size: 0.9375rem;
+    max-width: var(--measure);
+  }
+
+  .detail :global(p) {
+    margin-bottom: var(--space-2xs);
+  }
+
+  .detail :global(p:last-of-type) {
+    margin-bottom: 0;
+  }
+
+  .stack {
+    margin-top: var(--space-s);
+  }
+</style>
