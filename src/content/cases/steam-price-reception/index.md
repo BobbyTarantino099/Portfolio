@@ -8,6 +8,7 @@ tools: [Python, pandas, matplotlib]
 domain: "Video games"
 problemType: "find patterns"
 scale: "125,855 games · 2 sources combined"
+repo: "https://github.com/BobbyTarantino099/steam-price-reception"
 featured: true
 demonstrates: "Turning an investment question into a pricing-and-sentiment analysis on a dataset with a real structural flaw — not trivial nulls, but a broken header that misaligns columns — enriched with a second source (CPI-U) to compare prices across 29 years in real dollars. The part I most want to show is the one that is usually missing: ruling out the obvious alternative explanation before publishing the finding."
 ---
@@ -138,7 +139,7 @@ investment lane for small studios.
 
 ```bash
 # 1. Clone
-git clone <REPO-URL>
+git clone https://github.com/BobbyTarantino099/steam-price-reception.git
 cd steam-price-reception
 
 # 2. Dependencies
