@@ -26,7 +26,7 @@ export const site = {
 
   links: {
     github: 'https://github.com/BobbyTarantino099',
-    linkedin: '', // TODO(juanes): tu perfil de LinkedIn
+    linkedin: 'https://www.linkedin.com/in/juan-a-702389312',
     cv: '', // TODO(juanes): /cv.pdf — colocar el archivo en public/
     /** Repositorio de este sitio, para el colofón del pie. */
     source: 'https://github.com/BobbyTarantino099/Portfolio',

@@ -1,43 +1,46 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Monogram from '../components/Monogram.astro';
+import portrait from '../assets/portrait.png';
 import { site } from '../site';
 
 /*
- * TODO(juanes): el borrador de abajo está escrito a partir de tus respuestas
- * (buscas remoto internacional, ya trabajas con datos, te atraen negocio y
- * producto, y quieres que se te recuerde por traducir datos a decisiones).
+ * Bio escrita a partir del CV de Juan (Connext Global Solutions, Petrozones,
+ * UNAB) y de sus respuestas: busca remoto internacional, ya trabaja con datos,
+ * le atraen negocio y producto, y quiere que se le recuerde por traducir datos
+ * a decisiones. Nada aquí está inventado — todo sale del CV o de lo que dijo.
  *
- * Faltan TRES datos que no invento porque son verificables y se caen en una
- * entrevista: tu puesto actual, el sector, y cuánto llevas. Están marcados
- * abajo entre [corchetes]. Rellénalos y borra este comentario.
- *
- * Si quieres retrato, deja el archivo en public/ y cambia `portrait` por su
- * ruta: el hueco ya está montado.
+ * Lo que SÍ deja fuera a propósito: el objetivo del CV apunta a un puesto
+ * concreto en banca local, y en el sitio dijo que busca remoto internacional.
+ * Manda lo segundo.
  */
-const portrait: string | null = null;
 
 const tools = {
-  'Day to day': ['Python', 'pandas', 'SQL'],
-  'For the portfolio': ['matplotlib', 'Astro', 'Git'],
+  'Day to day': ['Python', 'SQL', 'Power BI', 'Advanced Excel'],
+  'In this portfolio': ['pandas', 'matplotlib', 'Astro'],
 };
+
+const facts = [
+  { label: 'Based in', value: 'Bucaramanga, Colombia (UTC−5)' },
+  { label: 'Languages', value: 'Spanish (native), English (C1)' },
+  { label: 'Studying', value: 'Systems Engineering, UNAB' },
+];
 ---
 
 <Base
   title="About"
-  description={`${site.name} — ${site.role}. ${site.tagline}`}
+  description={`${site.name} — ${site.role} working on financial data. ${site.tagline}`}
 >
   <div class="shell about">
     <header class="about-head">
-      <div class="portrait-slot">
-        {
-          portrait ? (
-            <img src={portrait} alt={`Portrait of ${site.name}`} width="160" height="160" />
-          ) : (
-            <Monogram />
-          )
-        }
-      </div>
+      <Image
+        src={portrait}
+        alt={`Portrait of ${site.name}`}
+        widths={[160, 320]}
+        sizes="10rem"
+        class="portrait"
+        loading="eager"
+      />
 
       <div>
         <p class="eyebrow">About</p>
@@ -49,30 +52,41 @@ const tools = {
     <div class="about-body">
       <div class="bio measure">
         <p class="lede">
-          I work with data day to day, and I build these case studies to show how I actually think
-          — not just what tools I can name.
+          I&rsquo;ve spent the last few years turning financial data into things people can decide
+          with. I build these case studies to show how I actually think — not just what tools I
+          can name.
         </p>
 
         <p>
-          I&rsquo;m a <strong>[tu puesto actual]</strong> at <strong>[sector o empresa]</strong>,
-          where I&rsquo;ve spent <strong>[X años]</strong> turning messy data into things people
-          can decide with. Most of my work sits close to the business: pricing, product, and the
-          kind of question that starts with &ldquo;where should we spend our effort?&rdquo;
+          I&rsquo;m a data analyst at <strong>Connext Global Solutions</strong>, working on
+          international banking portfolios: automating financial statements and cash-flow
+          reporting, building Power BI dashboards that track quarterly KPIs and covenant
+          compliance for stakeholders across several regions, and maintaining the Python and Azure
+          SQL pipelines underneath them. Before that I spent nearly three years at{' '}
+          <strong>Petrozones</strong> writing ETL scripts and building dashboards for operational
+          data.
         </p>
 
         <p>
-          What I care about is the last mile. Plenty of analyses stop at an observation — a
-          correlation, a chart, a number that went up. The part that takes work is turning that
-          into a recommendation someone can act on, with the limits of the evidence stated
-          plainly. That&rsquo;s what I try to demonstrate in every case here: what the data
-          supports, what it doesn&rsquo;t, and what I would do next.
+          That work is where I learned the part I care most about: the last mile. Plenty of
+          analyses stop at an observation — a correlation, a chart, a number that moved. What
+          takes work is turning it into something a person can act on, with the limits of the
+          evidence stated plainly. When a covenant report goes to a stakeholder three timezones
+          away, it has to be right <em>and</em> it has to be readable without you in the room.
         </p>
 
         <p>
-          I&rsquo;m currently looking for <strong>remote data analyst roles</strong> with teams
-          that value a documented process. If the way I work looks useful to you, the fastest way
-          to judge it is to read a case — the <a href="/method/">method</a> behind them is written
-          down too.
+          The case studies here are where I practise that in public, on questions nobody assigned
+          me. Each one starts from a decision someone had to make, documents every cleaning step
+          so it can be re-run from the raw file, and ends in recommendations that say what the
+          data supports and what it doesn&rsquo;t. The <a href="/method/">method</a> behind them
+          is written down too.
+        </p>
+
+        <p>
+          I&rsquo;m looking for <strong>remote data analyst roles</strong> with teams that value a
+          documented process. The fastest way to judge whether that&rsquo;s useful to you is to
+          read a case.
         </p>
       </div>
 
@@ -89,6 +103,20 @@ const tools = {
                       {items.map((t) => <li class="tag">{t}</li>)}
                     </ul>
                   </dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <section>
+          <h2 class="eyebrow">Details</h2>
+          <dl class="facts">
+            {
+              facts.map((f) => (
+                <div>
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
                 </div>
               ))
             }
@@ -118,12 +146,13 @@ const tools = {
     margin-bottom: var(--space-xl);
   }
 
-  .portrait-slot img {
-    width: 5rem;
-    height: 5rem;
+  .portrait {
+    width: 6.5rem;
+    height: 6.5rem;
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--rule);
+    flex: none;
   }
 
   .about-head h1 {
@@ -161,20 +190,27 @@ const tools = {
     border-bottom: 1px solid var(--rule);
   }
 
-  .tools {
+  .tools,
+  .facts {
     display: grid;
     gap: var(--space-s);
     margin: 0;
   }
 
-  .tools dt {
+  .tools dt,
+  .facts dt {
     font-size: 0.8125rem;
     color: var(--ink-soft);
     margin-bottom: var(--space-3xs);
   }
 
-  .tools dd {
+  .tools dd,
+  .facts dd {
     margin: 0;
+  }
+
+  .facts dd {
+    font-size: 0.9375rem;
   }
 
   .contact {
