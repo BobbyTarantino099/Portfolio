@@ -1,89 +1,176 @@
 ---
 import Base from '../layouts/Base.astro';
+import Monogram from '../components/Monogram.astro';
 import { site } from '../site';
 
-// TODO(juanes): esta pagina esta deliberadamente incompleta.
-// No invento biografia, experiencia ni herramientas por ti: escribelo tu y
-// borra estos comentarios. Es la unica pagina del sitio donde hablas en primera
-// persona sin datos que te respalden, asi que tiene que ser tuya de verdad.
+/*
+ * TODO(juanes): el borrador de abajo está escrito a partir de tus respuestas
+ * (buscas remoto internacional, ya trabajas con datos, te atraen negocio y
+ * producto, y quieres que se te recuerde por traducir datos a decisiones).
+ *
+ * Faltan TRES datos que no invento porque son verificables y se caen en una
+ * entrevista: tu puesto actual, el sector, y cuánto llevas. Están marcados
+ * abajo entre [corchetes]. Rellénalos y borra este comentario.
+ *
+ * Si quieres retrato, deja el archivo en public/ y cambia `portrait` por su
+ * ruta: el hueco ya está montado.
+ */
+const portrait: string | null = null;
+
 const tools = {
-  'Comfortable with': ['Python', 'pandas', 'SQL'],
-  'Learning': ['Astro'],
+  'Day to day': ['Python', 'pandas', 'SQL'],
+  'For the portfolio': ['matplotlib', 'Astro', 'Git'],
 };
 ---
 
-<Base title="About" description={`About ${site.name} — ${site.tagline}`}>
-  <article class="content-grid">
-    <p class="eyebrow">About</p>
-    <h1>{site.name}</h1>
+<Base
+  title="About"
+  description={`${site.name} — ${site.role}. ${site.tagline}`}
+>
+  <div class="shell about">
+    <header class="about-head">
+      <div class="portrait-slot">
+        {
+          portrait ? (
+            <img src={portrait} alt={`Portrait of ${site.name}`} width="160" height="160" />
+          ) : (
+            <Monogram />
+          )
+        }
+      </div>
 
-    <p class="lede">{site.tagline}</p>
+      <div>
+        <p class="eyebrow">About</p>
+        <h1>{site.name}</h1>
+        <p class="role">{site.role} · Open to remote roles</p>
+      </div>
+    </header>
 
-    <div class="todo">
-      <p>
-        <strong>Pendiente de escribir.</strong> Dos o tres párrafos en primera persona: de dónde
-        vienes, qué tipo de problemas te interesan y por qué. Los reclutadores leen esta página
-        para saber si encajas con el equipo, no para verificar habilidades — eso ya lo hacen los
-        casos. Escríbelo en inglés y borra este aviso.
-      </p>
+    <div class="about-body">
+      <div class="bio measure">
+        <p class="lede">
+          I work with data day to day, and I build these case studies to show how I actually think
+          — not just what tools I can name.
+        </p>
+
+        <p>
+          I&rsquo;m a <strong>[tu puesto actual]</strong> at <strong>[sector o empresa]</strong>,
+          where I&rsquo;ve spent <strong>[X años]</strong> turning messy data into things people
+          can decide with. Most of my work sits close to the business: pricing, product, and the
+          kind of question that starts with &ldquo;where should we spend our effort?&rdquo;
+        </p>
+
+        <p>
+          What I care about is the last mile. Plenty of analyses stop at an observation — a
+          correlation, a chart, a number that went up. The part that takes work is turning that
+          into a recommendation someone can act on, with the limits of the evidence stated
+          plainly. That&rsquo;s what I try to demonstrate in every case here: what the data
+          supports, what it doesn&rsquo;t, and what I would do next.
+        </p>
+
+        <p>
+          I&rsquo;m currently looking for <strong>remote data analyst roles</strong> with teams
+          that value a documented process. If the way I work looks useful to you, the fastest way
+          to judge it is to read a case — the <a href="/method/">method</a> behind them is written
+          down too.
+        </p>
+      </div>
+
+      <aside class="about-side">
+        <section>
+          <h2 class="eyebrow">Tools</h2>
+          <dl class="tools">
+            {
+              Object.entries(tools).map(([label, items]) => (
+                <div>
+                  <dt>{label}</dt>
+                  <dd>
+                    <ul class="tags">
+                      {items.map((t) => <li class="tag">{t}</li>)}
+                    </ul>
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <section>
+          <h2 class="eyebrow">Get in touch</h2>
+          <ul class="contact">
+            <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+            {site.links.linkedin && <li><a href={site.links.linkedin}>LinkedIn</a></li>}
+            {site.links.github && <li><a href={site.links.github}>GitHub</a></li>}
+            {site.links.cv && <li><a href={site.links.cv}>Download CV (PDF)</a></li>}
+          </ul>
+        </section>
+      </aside>
     </div>
-
-    <h2>Tools</h2>
-
-    <dl class="tools">
-      {
-        Object.entries(tools).map(([label, items]) => (
-          <div>
-            <dt class="eyebrow">{label}</dt>
-            <dd>
-              <ul class="tags">
-                {items.map((t) => <li class="tag">{t}</li>)}
-              </ul>
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
-
-    <h2>Get in touch</h2>
-    <ul class="contact">
-      <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
-      {site.links.linkedin && <li><a href={site.links.linkedin}>LinkedIn</a></li>}
-      {site.links.github && <li><a href={site.links.github}>GitHub</a></li>}
-      {site.links.cv && <li><a href={site.links.cv}>Download CV (PDF)</a></li>}
-    </ul>
-  </article>
+  </div>
 </Base>
 
 <style>
-  h1 {
-    margin: var(--space-s) 0 var(--space-m);
+  .about-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-xl);
   }
 
-  /* Aviso visible en desarrollo para que no se publique una página a medias. */
-  .todo {
-    border: 1px dashed var(--rule);
-    border-left: 3px solid var(--accent);
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: var(--space-s) var(--space-m);
-    margin-block: var(--space-l);
+  .portrait-slot img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--rule);
   }
 
-  .todo p {
+  .about-head h1 {
+    margin: var(--space-3xs) 0;
+  }
+
+  .role {
     margin: 0;
+    color: var(--ink-soft);
     font-size: 0.9375rem;
+  }
+
+  .about-body {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  @media (min-width: 56rem) {
+    .about-body {
+      grid-template-columns: minmax(0, 1fr) 16rem;
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+  }
+
+  .about-side {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .about-side h2 {
+    margin: 0 0 var(--space-2xs);
+    font-family: var(--font-sans);
+    padding-bottom: var(--space-3xs);
+    border-bottom: 1px solid var(--rule);
   }
 
   .tools {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-    gap: var(--space-m);
-    margin: var(--space-m) 0 0;
+    gap: var(--space-s);
+    margin: 0;
   }
 
   .tools dt {
-    margin-bottom: var(--space-2xs);
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+    margin-bottom: var(--space-3xs);
   }
 
   .tools dd {
@@ -93,7 +180,9 @@ const tools = {
   .contact {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: grid;
     gap: var(--space-3xs);
+    font-size: 0.9375rem;
   }
 </style>

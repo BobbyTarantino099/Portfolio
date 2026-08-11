@@ -4,138 +4,127 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   entry: CollectionEntry<'cases'>;
-  variant?: 'featured' | 'compact';
 }
 
-const { entry, variant = 'compact' } = Astro.props;
+const { entry } = Astro.props;
 const { title, summary, hero, heroAlt, tools, scale, domain } = entry.data;
 const href = `/cases/${entry.id}/`;
 ---
 
-{
-  variant === 'featured' ? (
-    <article class="card card-featured">
-      <p class="eyebrow">{domain}</p>
+<article class="card">
+  <a href={href} class="card-media" tabindex="-1" aria-hidden="true">
+    <Image src={hero} alt="" widths={[420, 840]} sizes="(max-width: 48rem) 100vw, 22rem" loading="lazy" />
+  </a>
 
-      {/* El enlace del titular se estira sobre toda la tarjeta con ::after, así
-          la tarjeta entera es clicable sin duplicar enlaces en el árbol de
-          accesibilidad. */}
-      <h2><a href={href}>{title}</a></h2>
+  <div class="card-body">
+    <p class="eyebrow">{domain}</p>
 
-      <p class="summary">{summary}</p>
+    {/* El enlace del titular se estira sobre toda la tarjeta con ::after: la
+        tarjeta entera es clicable sin duplicar enlaces en el árbol de
+        accesibilidad. Por eso la imagen va con alt vacío y aria-hidden. */}
+    <h2><a href={href}>{title}</a></h2>
 
-      <ul class="tags">
-        {tools.map((tool) => <li class="tag">{tool}</li>)}
-        <li class="tag">{scale}</li>
-      </ul>
+    <p class="summary">{summary}</p>
 
-      <div class="figure-surface card-media">
-        <Image
-          src={hero}
-          alt={heroAlt}
-          widths={[640, 960, 1280]}
-          sizes="(max-width: 60rem) 100vw, 56rem"
-          loading="eager"
-        />
-      </div>
-    </article>
-  ) : (
-    <article class="card card-compact">
-      <div class="compact-text">
-        <p class="eyebrow">{domain}</p>
-        <h3><a href={href}>{title}</a></h3>
-        <p class="summary">{summary}</p>
-        <ul class="tags">
-          {tools.map((tool) => <li class="tag">{tool}</li>)}
-        </ul>
-      </div>
+    <ul class="tags">
+      {tools.map((tool) => <li class="tag">{tool}</li>)}
+      <li class="tag scale">{scale}</li>
+    </ul>
 
-      <div class="figure-surface compact-media">
-        <Image src={hero} alt="" widths={[280, 560]} sizes="14rem" loading="lazy" />
-      </div>
-    </article>
-  )
-}
+    <span class="visually-hidden">{heroAlt}</span>
+  </div>
+</article>
 
 <style>
   .card {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--paper);
+    transition: border-color 160ms ease, transform 160ms ease;
   }
 
-  .card a {
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover {
+      transform: none;
+    }
+  }
+
+  /* Lienzo blanco fijo: los gráficos salen de matplotlib con fondo blanco y
+     sueltos sobre el tema oscuro parecen un fallo de renderizado. */
+  .card-media {
+    display: block;
+    background: var(--figure-bg);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.6rem;
+  }
+
+  .card-media img {
+    width: 100%;
+    /* Alto fijo para que la rejilla no quede dentada, pero `contain` en vez de
+       `cover`: recortar un gráfico corta datos y hace que parezca roto. Sobre
+       el lienzo blanco el margen sobrante no se ve. */
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    padding: var(--space-s) var(--space-m) var(--space-m);
+    flex: 1;
+  }
+
+  .card h2 {
+    margin: 0;
+    font-size: 1.22rem;
+    line-height: 1.22;
+    letter-spacing: -0.012em;
+  }
+
+  .card h2 a {
+    color: var(--ink);
     text-decoration: none;
-    color: inherit;
   }
 
-  /* Toda la tarjeta es zona de clic. */
-  .card :where(h2, h3) a::after {
+  .card h2 a::after {
     content: '';
     position: absolute;
     inset: 0;
   }
 
-  .card :where(h2, h3) a:hover {
+  .card:hover h2 a {
     color: var(--accent);
   }
 
-  /* --- Destacada --------------------------------------------------------- */
-
-  .card-featured h2 {
-    margin: var(--space-2xs) 0 var(--space-s);
-    max-width: 20ch;
-    font-size: clamp(1.9rem, 1.4rem + 2.4vw, 3rem);
-    line-height: 1.08;
-    letter-spacing: -0.022em;
-  }
-
-  .card-featured .summary {
-    max-width: 54ch;
-    font-size: 1.0625rem;
+  .summary {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
     color: var(--ink-soft);
-    margin-bottom: var(--space-s);
+    /* Tres líneas máximo: las tarjetas de la rejilla tienen que alinearse. */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .card-featured .tags {
-    margin-bottom: var(--space-m);
+  .tags {
+    margin-top: auto;
+    padding-top: var(--space-2xs);
   }
 
-  .card-media {
-    transition: border-color 160ms ease;
-  }
-
-  .card-featured:hover .card-media {
-    border-color: var(--accent);
-  }
-
-  /* --- Compacta ---------------------------------------------------------- */
-
-  .card-compact {
-    display: grid;
-    gap: var(--space-m);
-    padding-top: var(--space-l);
-    border-top: 1px solid var(--rule);
-    align-items: start;
-  }
-
-  @media (min-width: 44rem) {
-    .card-compact {
-      grid-template-columns: minmax(0, 1fr) 14rem;
-    }
-  }
-
-  .card-compact h3 {
-    margin: var(--space-3xs) 0 var(--space-2xs);
-    font-size: 1.3rem;
-    line-height: 1.25;
-  }
-
-  .card-compact .summary {
+  .scale {
     color: var(--ink-soft);
-    font-size: 0.9375rem;
-    margin-bottom: var(--space-2xs);
-  }
-
-  .compact-media {
-    padding: 0.4rem;
   }
 </style>

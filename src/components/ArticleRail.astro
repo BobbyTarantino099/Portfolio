@@ -1,0 +1,211 @@
+---
+/**
+ * Rail lateral de las páginas largas: vuelta atrás, metadatos e índice de
+ * secciones. Se queda fijo al hacer scroll en pantallas anchas.
+ *
+ * El índice sale de `headings`, que devuelve `render()` de Astro, y los
+ * encabezados del Markdown ya llevan `id` en la salida construida — así que no
+ * hace falta ningún plugin para enlazarlos.
+ *
+ * Sin resaltado de sección activa a propósito: exigiría IntersectionObserver, y
+ * hoy el sitio no envía un solo byte de JavaScript.
+ */
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  backHref: string;
+  backLabel: string;
+  title: string;
+  headings?: MarkdownHeading[];
+  meta?: { label: string; value: string; href?: string }[];
+}
+
+const { backHref, backLabel, title, headings = [], meta = [] } = Astro.props;
+
+/* Solo h2 y h3. Más profundidad convierte el índice en otro muro de texto. */
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<aside class="rail">
+  <a href={backHref} class="back">← {backLabel}</a>
+
+  <p class="rail-title">{title}</p>
+
+  {
+    meta.length > 0 && (
+      <dl class="rail-meta">
+        {meta.map((m) => (
+          <div>
+            <dt>{m.label}</dt>
+            <dd>{m.href ? <a href={m.href}>{m.value}</a> : m.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+
+  {
+    toc.length > 0 && (
+      <nav class="rail-toc" aria-labelledby="toc-label">
+        {/* En móvil el índice se pliega: ocupa demasiado antes del contenido. */}
+        <details open>
+          <summary id="toc-label" class="eyebrow">Contents</summary>
+          <ul>
+            {toc.map((h) => (
+              <li class={h.depth === 3 ? 'sub' : undefined}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </nav>
+    )
+  }
+</aside>
+
+<style>
+  .rail {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
+  }
+
+  @media (min-width: 62rem) {
+    .rail {
+      position: sticky;
+      top: var(--space-m);
+      /* Que el índice largo haga scroll dentro del rail, no que empuje la
+         página ni se corte por abajo. */
+      max-height: calc(100vh - var(--space-xl));
+      overflow-y: auto;
+      padding-right: var(--space-2xs);
+      border-right: 1px solid var(--rule);
+      /* Barra discreta: en un caso con muchas secciones el rail va a
+         desbordar, y la barra por defecto canta demasiado al lado del texto. */
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule) transparent;
+    }
+  }
+
+  .back {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.8125rem;
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .rail-title {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+    /* Un titular largo se comía el alto del rail y empujaba el índice fuera de
+       la vista. Tres líneas bastan para reconocer dónde estás. */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* --- Metadatos ---------------------------------------------------------- */
+
+  .rail-meta {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding-top: var(--space-2xs);
+    border-top: 1px solid var(--rule);
+  }
+
+  .rail-meta dt {
+    font-size: 0.68rem;
+    font-weight: 550;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--ink-soft);
+  }
+
+  .rail-meta dd {
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+
+  /* En móvil los metadatos van en varias columnas: apilados ocupan media
+     pantalla antes de llegar al contenido. */
+  @media (max-width: 61.99rem) {
+    .rail-meta {
+      grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+      gap: var(--space-s) var(--space-m);
+    }
+  }
+
+  /* --- Índice ------------------------------------------------------------- */
+
+  .rail-toc {
+    padding-top: var(--space-2xs);
+    border-top: 1px solid var(--rule);
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+    margin-bottom: var(--space-2xs);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: ' +';
+    color: var(--ink-soft);
+  }
+
+  details[open] summary::after {
+    content: ' −';
+  }
+
+  @media (min-width: 62rem) {
+    /* En escritorio el índice está siempre visible: no hace falta el afford. */
+    summary {
+      cursor: default;
+    }
+    summary::after,
+    details[open] summary::after {
+      content: '';
+    }
+  }
+
+  .rail-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .rail-toc .sub {
+    padding-left: var(--space-xs);
+    font-size: 0.8125rem;
+  }
+
+  .rail-toc a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    display: block;
+    padding-block: 0.1rem;
+  }
+
+  .rail-toc a:hover {
+    color: var(--accent);
+  }
+</style>

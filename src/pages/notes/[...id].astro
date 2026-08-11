@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import ArticleRail from '../../components/ArticleRail.astro';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes');
@@ -11,29 +12,43 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const d = entry.data;
+
+const meta = [
+  {
+    label: 'Published',
+    value: d.date.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }),
+  },
+  ...(d.tags.length > 0 ? [{ label: 'Tags', value: d.tags.join(' · ') }] : []),
+];
 ---
 
 <Base title={d.title} description={d.summary}>
-  <article>
-    <header class="content-grid note-head">
-      <p class="eyebrow">
-        <a href="/notes/">Notes</a>
-      </p>
-      <h1>{d.title}</h1>
-      <p class="byline">
-        <time datetime={d.date.toISOString()}>
-          {d.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
-        </time>
-        {d.tags.length > 0 && <> · {d.tags.join(' · ')}</>}
-      </p>
-    </header>
+  <div class="shell article-shell">
+    <ArticleRail
+      backHref="/notes/"
+      backLabel="Notes"
+      title={d.title}
+      headings={headings}
+      meta={meta}
+    />
 
-    <div class="content-grid note-body">
-      <Content />
-    </div>
-  </article>
+    <article>
+      <header class="note-head">
+        <h1>{d.title}</h1>
+        <p class="lede measure">{d.summary}</p>
+      </header>
+
+      <div class="note-body">
+        <Content />
+      </div>
+    </article>
+  </div>
 </Base>
 
 <style>
@@ -41,47 +56,40 @@ const d = entry.data;
     margin-bottom: var(--space-l);
   }
 
-  .eyebrow a {
-    color: inherit;
-    text-decoration-color: var(--rule);
-  }
-
   .note-head h1 {
-    margin: var(--space-s) 0 var(--space-m);
-    max-width: 24ch;
-  }
-
-  .byline {
-    font-size: 0.9375rem;
-    color: var(--ink-soft);
-    margin: 0;
+    margin: 0 0 var(--space-m);
+    max-width: 22ch;
   }
 
   /* El contenido viene de <Content />, sin atributo de ámbito: :global(). */
+  .note-body :global(p),
+  .note-body :global(ul),
+  .note-body :global(ol),
+  .note-body :global(h2),
+  .note-body :global(h3),
+  .note-body :global(blockquote) {
+    max-width: var(--measure);
+  }
+
   .note-body :global(> *:first-child) {
     margin-top: 0;
   }
 
-  .note-body :global(pre) {
-    grid-column: wide;
-  }
-
-  /* Mismo motivo que en la página de caso: sin envoltorio, una tabla de
-     Markdown desborda la página en móvil. Ver cases/[...id].astro. */
-  .note-body :global(table) {
-    grid-column: wide;
-    display: block;
-    width: max-content;
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
   .note-body :global(p:has(> img)) {
-    grid-column: wide;
+    max-width: none;
     background: var(--figure-bg);
     border: 1px solid var(--rule);
     border-radius: var(--radius);
     padding: var(--figure-pad);
     margin-block: var(--space-l);
+  }
+
+  /* Mismo motivo que en la página de caso: sin envoltorio, una tabla de
+     Markdown desborda la página en móvil. */
+  .note-body :global(table) {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
   }
 </style>

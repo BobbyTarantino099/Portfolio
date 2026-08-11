@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import ArticleRail from '../../components/ArticleRail.astro';
 
 export async function getStaticPaths() {
   const cases = await getCollection('cases');
@@ -12,75 +13,74 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const d = entry.data;
 
 const dateLabel = d.date.toLocaleDateString('en-GB', {
   year: 'numeric',
   month: 'long',
 });
+
+/* Los metadatos viven en el rail, fuera del flujo vertical: eso es la mitad de
+   lo que acorta la página. */
+/* Sin `Domain`: ya aparece como eyebrow encima del titular, y en el rail cada
+   línea cuesta alto que le quita sitio al índice. */
+const meta = [
+  { label: 'Problem type', value: d.problemType },
+  { label: 'Tools', value: d.tools.join(' · ') },
+  { label: 'Scale', value: d.scale },
+  { label: 'Published', value: dateLabel },
+  ...(d.repo ? [{ label: 'Evidence', value: 'Repository', href: d.repo }] : []),
+];
 ---
 
 <Base title={d.title} description={d.summary}>
-  <article>
-    <header class="content-grid case-head">
-      <p class="eyebrow">
-        <a href="/">Work</a> <span aria-hidden="true">/</span> {d.domain}
-      </p>
+  <div class="shell article-shell">
+    <ArticleRail
+      backHref="/"
+      backLabel="Work"
+      title={d.title}
+      headings={headings}
+      meta={meta}
+    />
 
-      <h1>{d.title}</h1>
-      <p class="lede">{d.summary}</p>
+    <article>
+      <header class="case-head">
+        <p class="eyebrow">{d.domain}</p>
+        <h1>{d.title}</h1>
+        <p class="lede measure">{d.summary}</p>
 
-      <div class="figure-surface hero wide">
-        <Image
-          src={d.hero}
-          alt={d.heroAlt}
-          widths={[640, 1024, 1440]}
-          sizes="(max-width: 64rem) 100vw, 60rem"
-          loading="eager"
-        />
+        <div class="figure-surface hero">
+          <Image
+            src={d.hero}
+            alt={d.heroAlt}
+            widths={[640, 1024, 1440]}
+            sizes="(max-width: 62rem) 100vw, 56rem"
+            loading="eager"
+          />
+        </div>
+      </header>
+
+      <div class="case-body">
+        <Content />
       </div>
 
-      <dl class="meta wide">
-        <div><dt>Problem type</dt><dd>{d.problemType}</dd></div>
-        <div><dt>Domain</dt><dd>{d.domain}</dd></div>
-        <div><dt>Tools</dt><dd>{d.tools.join(' · ')}</dd></div>
-        <div><dt>Scale</dt><dd>{d.scale}</dd></div>
-        <div><dt>Published</dt><dd>{dateLabel}</dd></div>
-        <div>
-          <dt>Evidence</dt>
-          <dd>
-            {
-              d.repo ? (
-                <a href={d.repo}>Repository</a>
-              ) : (
-                <span class="muted">Not published yet</span>
-              )
-            }
-          </dd>
-        </div>
-      </dl>
-    </header>
-
-    <div class="content-grid case-body">
-      <Content />
-    </div>
-
-    {
-      /* `demonstrates` NO se renderiza aquí: el cuerpo del Markdown ya trae la
-         sección "What this demonstrates" como séptima del contrato, y pintar
-         ambas duplicaba el bloque entero. El campo del front-matter se queda
-         como metadato para la matriz de cobertura del portafolio. */
-      d.repo && (
-        <footer class="content-grid case-foot">
-          <p>
-            Cleaning log, analysis scripts and the full case record are in the{' '}
-            <a href={d.repo}>case repository</a>.
-          </p>
-        </footer>
-      )
-    }
-  </article>
+      {
+        /* `demonstrates` NO se renderiza aquí: el cuerpo del Markdown ya trae la
+           sección "What this demonstrates" como séptima del contrato, y pintar
+           ambas duplicaba el bloque entero. El campo del front-matter se queda
+           como metadato para la matriz de cobertura del portafolio. */
+        d.repo && (
+          <footer class="case-foot">
+            <p>
+              Cleaning log, analysis scripts and the full case record are in the{' '}
+              <a href={d.repo}>case repository</a>.
+            </p>
+          </footer>
+        )
+      }
+    </article>
+  </div>
 </Base>
 
 <style>
@@ -88,62 +88,38 @@ const dateLabel = d.date.toLocaleDateString('en-GB', {
     margin-bottom: var(--space-xl);
   }
 
-  .eyebrow a {
-    color: inherit;
-    text-decoration-color: var(--rule);
-  }
-
   .case-head h1 {
-    margin: var(--space-s) 0 var(--space-m);
-    max-width: 21ch;
+    margin: var(--space-2xs) 0 var(--space-m);
+    max-width: 20ch;
   }
 
   .case-head .lede {
     margin-bottom: var(--space-l);
   }
 
-  .hero {
-    margin-bottom: var(--space-m);
-  }
-
-  .meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
-    gap: var(--space-s) var(--space-m);
-    margin: 0;
-    padding-block: var(--space-s);
-    border-block: 1px solid var(--rule);
-  }
-
-  .meta dt {
-    font-size: 0.7rem;
-    font-weight: 550;
-    text-transform: uppercase;
-    letter-spacing: 0.11em;
-    color: var(--ink-soft);
-    margin-bottom: var(--space-3xs);
-  }
-
-  .meta dd {
-    margin: 0;
-    font-size: 0.9375rem;
-    line-height: 1.4;
-  }
-
   /* --- Cuerpo del Markdown -------------------------------------------------
      El contenido lo renderiza <Content />, así que sus elementos no llevan el
      atributo de ámbito de Astro: hay que alcanzarlos con :global().
-     Las figuras, tablas y bloques de código escapan a la columna ancha; el
-     texto se queda en la medida de lectura. */
+     El texto mantiene su medida; figuras, tablas y código ocupan todo el ancho
+     de la columna de contenido, que es bastante más ancha. */
+
+  .case-body :global(p),
+  .case-body :global(ul),
+  .case-body :global(ol),
+  .case-body :global(h2),
+  .case-body :global(h3),
+  .case-body :global(blockquote) {
+    max-width: var(--measure);
+  }
 
   .case-body :global(> *:first-child) {
     margin-top: 0;
   }
 
-  /* Astro envuelve las imágenes de Markdown en un <p>, así que el lienzo
-     blanco se aplica al párrafo contenedor. */
+  /* Astro envuelve las imágenes de Markdown en un <p>, así que el lienzo blanco
+     va al párrafo contenedor — y ese párrafo sí ocupa el ancho completo. */
   .case-body :global(p:has(> img)) {
-    grid-column: wide;
+    max-width: none;
     background: var(--figure-bg);
     border: 1px solid var(--rule);
     border-radius: var(--radius);
@@ -151,23 +127,16 @@ const dateLabel = d.date.toLocaleDateString('en-GB', {
     margin-block: var(--space-l);
   }
 
-  /* Las tablas de Markdown no traen envoltorio y, siendo hijas directas de la
-     rejilla, no pueden encogerse por debajo del ancho mínimo de sus columnas:
-     en móvil desbordaban la página entera (medido: 103 px). Convertirlas en
-     bloque les da un contenedor que absorbe el scroll horizontal.
-     Un plugin de rehype sería más limpio, pero Astro 7 usa Sätteri como
-     procesador de Markdown y habilitarlos obligaría a instalar el procesador
-     antiguo entero. */
+  /* Las tablas de Markdown no traen envoltorio y, sin él, no pueden encogerse
+     por debajo del ancho mínimo de sus columnas: en móvil desbordaban la página
+     (medido: 103 px). Convertirlas en bloque les da un contenedor que absorbe el
+     scroll horizontal. Un plugin de rehype sería más limpio, pero Astro 7 usa
+     Sätteri y habilitarlos obligaría a instalar el procesador antiguo entero. */
   .case-body :global(table) {
-    grid-column: wide;
     display: block;
     width: max-content;
     max-width: 100%;
     overflow-x: auto;
-  }
-
-  .case-body :global(pre) {
-    grid-column: wide;
   }
 
   .case-foot {
@@ -180,5 +149,6 @@ const dateLabel = d.date.toLocaleDateString('en-GB', {
     color: var(--ink-soft);
     font-size: 0.9375rem;
     margin: 0;
+    max-width: var(--measure);
   }
 </style>

@@ -72,7 +72,14 @@
      caracteres. */
   --measure: 54ch;
   --gutter: 1.5rem;
-  --breakout: 10rem;
+
+  /* Ancho máximo de todo el sitio. Cabecera, pie y contenido comparten shell
+     para que los bordes verticales de la página se alineen entre sí. */
+  --shell: 78rem;
+
+  /* Rail lateral de las páginas largas. */
+  --rail: 15rem;
+  --rail-gap: 3rem;
 
   /* Escala de espaciado única. Todo ritmo vertical sale de aquí. */
   --space-3xs: 0.25rem;
@@ -134,28 +141,43 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* --- La rejilla editorial ------------------------------------------------- */
+/* --- Layout ---------------------------------------------------------------
+   Antes el texto vivía en una columna centrada con dos márgenes vacíos a los
+   lados. Ahora el ancho se aprovecha con lo que rodea al texto: un rail lateral
+   con metadatos e índice, y figuras que ocupan toda la columna de contenido.
+   La medida de lectura NO se ensancha — a 85 caracteres por línea la lectura se
+   degrada, y por eso `--measure` se queda donde está. */
 
-.content-grid {
+.shell {
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Páginas largas: rail fijo + contenido.
+
+   `minmax(0, 1fr)` y no `1fr`: `1fr` equivale a `minmax(auto, 1fr)`, y ese
+   `auto` permite que un hijo ancho —la tabla del caso, que usa `width:
+   max-content`— empuje la columna hasta su ancho máximo. Medido: la columna se
+   iba a 1844 px dentro de un shell de 373 px, desbordando la página en móvil. */
+.article-shell {
   display: grid;
-  grid-template-columns:
-    [full-start] minmax(var(--gutter), 1fr)
-    [wide-start] minmax(0, var(--breakout))
-    [text-start] min(var(--measure), 100% - var(--gutter) * 2) [text-end]
-    minmax(0, var(--breakout)) [wide-end]
-    minmax(var(--gutter), 1fr) [full-end];
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-l);
 }
 
-.content-grid > * {
-  grid-column: text;
+@media (min-width: 62rem) {
+  .article-shell {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    gap: var(--rail-gap);
+    align-items: start;
+  }
 }
 
-.content-grid > .wide {
-  grid-column: wide;
-}
-
-.content-grid > .full {
-  grid-column: full;
+/* Prosa: medida limitada pero alineada a la izquierda de su columna, no
+   centrada. Las figuras y tablas hermanas ocupan el ancho completo. */
+.measure {
+  max-width: var(--measure);
 }
 
 /* --- Titulares ------------------------------------------------------------ */

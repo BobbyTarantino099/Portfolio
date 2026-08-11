@@ -1,16 +1,22 @@
 /**
  * Datos del sitio, en un solo sitio.
  *
- * TODO(juanes): rellenar los marcadores. Estan deliberadamente vacios en vez de
- * inventados — un portafolio con datos de relleno publicados es peor que uno sin
- * publicar. Nada aqui deberia quedar como "TODO" el dia que el sitio salga.
+ * TODO(juanes): faltan los enlaces. Están deliberadamente vacíos en vez de
+ * inventados — un portafolio con enlaces rotos publicados es peor que uno sin
+ * publicar. Nada aquí debería seguir como "TODO" el día que lo enseñes.
  */
 export const site = {
-  /** Nombre como quieres que te lean los reclutadores. */
-  name: 'Juanes',
+  /** Nombre completo, como quieres que te lean los reclutadores. */
+  name: 'Juan Esteban Arenas',
 
-  /** Una linea. Que haces, no que quieres ser. */
-  tagline: 'Data analyst — turning business questions into defensible recommendations.',
+  /** Iniciales del monograma de la cabecera. */
+  initials: 'JEA',
+
+  /** El rol, en una línea. Acompaña al nombre en cabecera y pie. */
+  role: 'Data analyst',
+
+  /** Una frase. Qué haces, no qué quieres ser. */
+  tagline: 'Turning business questions into defensible recommendations.',
 
   /** Aparece en el <meta name="description"> de la home. */
   description:
@@ -19,9 +25,11 @@ export const site = {
   email: 'juanesa2002@gmail.com',
 
   links: {
-    github: '', // TODO: https://github.com/<usuario>
-    linkedin: '', // TODO: https://www.linkedin.com/in/<usuario>
-    cv: '', // TODO: /cv.pdf  (colocar el archivo en public/)
+    github: 'https://github.com/BobbyTarantino099',
+    linkedin: '', // TODO(juanes): tu perfil de LinkedIn
+    cv: '', // TODO(juanes): /cv.pdf — colocar el archivo en public/
+    /** Repositorio de este sitio, para el colofón del pie. */
+    source: 'https://github.com/BobbyTarantino099/Portfolio',
   },
 } as const;
 

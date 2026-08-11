@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { site, nav } from '../site';
+import Monogram from '../components/Monogram.astro';
 
 interface Props {
   title: string;
@@ -12,6 +13,7 @@ const { title, description = site.description } = Astro.props;
 const pageTitle = title === site.name ? title : `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
+const year = new Date().getFullYear();
 ---
 
 <!doctype html>
@@ -53,27 +55,32 @@ const path = Astro.url.pathname;
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
-      <div class="content-grid">
-        <div class="header-inner wide">
-          <a href="/" class="brand">{site.name}</a>
-          <nav aria-label="Main">
-            <ul>
-              {
-                nav.map((item) => {
-                  const current =
-                    item.href === '/' ? path === '/' : path.startsWith(item.href);
-                  return (
-                    <li>
-                      <a href={item.href} aria-current={current ? 'page' : undefined}>
-                        {item.label}
-                      </a>
-                    </li>
-                  );
-                })
-              }
-            </ul>
-          </nav>
-        </div>
+      <div class="shell header-inner">
+        <a href="/" class="brand">
+          <Monogram />
+          <span class="brand-text">
+            <span class="brand-name">{site.name}</span>
+            <span class="brand-role">{site.role}</span>
+          </span>
+        </a>
+
+        <nav aria-label="Main">
+          <ul>
+            {
+              nav.map((item) => {
+                const current =
+                  item.href === '/' ? path === '/' : path.startsWith(item.href);
+                return (
+                  <li>
+                    <a href={item.href} aria-current={current ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </nav>
       </div>
     </header>
 
@@ -82,21 +89,58 @@ const path = Astro.url.pathname;
     </main>
 
     <footer class="site-footer">
-      <div class="content-grid">
-        <div class="footer-inner wide">
-          <p class="footer-name">{site.name}</p>
-          <ul class="footer-links">
-            <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
-            {site.links.github && <li><a href={site.links.github}>GitHub</a></li>}
+      <div class="shell footer-grid">
+        <div class="footer-identity">
+          <div class="footer-brand">
+            <Monogram size="sm" />
+            <span>
+              <span class="footer-name">{site.name}</span>
+              <span class="footer-role">{site.role}</span>
+            </span>
+          </div>
+          <p class="footer-blurb">{site.tagline}</p>
+        </div>
+
+        <nav class="footer-col" aria-label="Footer">
+          <h2 class="eyebrow">Site</h2>
+          <ul>
+            {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          </ul>
+        </nav>
+
+        <div class="footer-col">
+          <h2 class="eyebrow">Elsewhere</h2>
+          <ul>
+            <li><a href={`mailto:${site.email}`}>Email</a></li>
             {site.links.linkedin && <li><a href={site.links.linkedin}>LinkedIn</a></li>}
+            {site.links.github && <li><a href={site.links.github}>GitHub</a></li>}
+            {site.links.cv && <li><a href={site.links.cv}>CV (PDF)</a></li>}
           </ul>
         </div>
+      </div>
+
+      {/* Colofón. En un portafolio técnico, decir con qué está hecho el sitio y
+          enseñar el código se lee como criterio, no como relleno. */}
+      <div class="shell colophon">
+        <p>© {year} {site.name}</p>
+        <p>
+          Built with Astro, set in Fraunces and Inter, deployed on Cloudflare.{' '}
+          <a href={site.links.source}>Source</a>.
+        </p>
       </div>
     </footer>
   </body>
 </html>
 
 <style>
+  /* Contenedor común de cabecera y pie: mismo ancho máximo que el shell de las
+     páginas, para que todos los bordes verticales del sitio se alineen. */
+  .shell {
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
   .site-header {
     border-bottom: 1px solid var(--rule);
     margin-bottom: var(--space-xl);
@@ -105,23 +149,42 @@ const path = Astro.url.pathname;
   .header-inner {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: var(--space-2xs) var(--space-m);
-    padding-block: var(--space-m);
+    padding-block: var(--space-s);
   }
 
   .brand {
-    font-family: var(--font-serif);
-    font-optical-sizing: auto;
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
     text-decoration: none;
+    color: var(--ink);
   }
 
-  .brand:hover {
+  .brand-text {
+    display: grid;
+    line-height: 1.15;
+  }
+
+  .brand-name {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-size: 1.08rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+  }
+
+  .brand-role {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--ink-soft);
+  }
+
+  .brand:hover .brand-name {
     color: var(--accent);
   }
 
@@ -158,34 +221,103 @@ const path = Astro.url.pathname;
     padding-bottom: var(--space-2xl);
   }
 
+  /* --- Pie ---------------------------------------------------------------- */
+
   .site-footer {
     border-top: 1px solid var(--rule);
-    padding-block: var(--space-m) var(--space-xl);
+    padding-top: var(--space-l);
     font-size: 0.9375rem;
   }
 
-  .footer-inner {
+  .footer-grid {
+    display: grid;
+    gap: var(--space-l) var(--space-m);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 40rem) {
+    .footer-grid {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+
+  .footer-brand {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-2xs) var(--space-m);
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .footer-brand > span {
+    display: grid;
+    line-height: 1.2;
   }
 
   .footer-name {
     font-family: var(--font-serif);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin: 0;
   }
 
-  .footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-m);
+  .footer-role {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--ink-soft);
+  }
+
+  .footer-blurb {
+    margin: var(--space-2xs) 0 0;
+    max-width: 34ch;
+    color: var(--ink-soft);
+  }
+
+  .footer-col h2 {
+    margin: 0 0 var(--space-2xs);
+    font-family: var(--font-sans);
+  }
+
+  .footer-col ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .footer-col a {
     color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .footer-col a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2xs) var(--space-m);
+    margin-top: var(--space-l);
+    padding-top: var(--space-s);
+    padding-bottom: var(--space-l);
+    border-top: 1px solid var(--rule);
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  .colophon p {
+    margin: 0;
+  }
+
+  .colophon a {
+    color: inherit;
+    text-decoration-color: var(--rule);
+  }
+
+  .colophon a:hover {
+    color: var(--accent);
   }
 </style>

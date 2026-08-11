@@ -63,7 +63,7 @@ const layers = [
   title="Method"
   description="How I run a data analysis case study: six phases, each with an exit gate that has to be passed before the next one starts."
 >
-  <article class="content-grid">
+  <article class="shell method">
     <p class="eyebrow">Method</p>
     <h1>How I work</h1>
 
@@ -80,7 +80,7 @@ const layers = [
 
     <h2>The six phases</h2>
 
-    <div class="wide table-wrap">
+    <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -132,7 +132,7 @@ const layers = [
       for it.
     </p>
 
-    <div class="wide table-wrap">
+    <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -173,8 +173,13 @@ const layers = [
     margin: var(--space-s) 0 var(--space-m);
   }
 
-  /* Las tablas escapan a la columna ancha; en pantallas estrechas la rejilla
-     colapsa y el scroll horizontal vive dentro del contenedor, no en la página. */
+  /* El texto mantiene su medida; las tablas ocupan todo el ancho del shell,
+     que es bastante más. */
+  .method > p,
+  .method > h2 {
+    max-width: var(--measure);
+  }
+
   .table-wrap {
     overflow-x: auto;
     margin-block: var(--space-m) var(--space-l);

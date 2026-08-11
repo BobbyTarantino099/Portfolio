@@ -1,0 +1,47 @@
+---
+/**
+ * Marca tipográfica con las iniciales, en Fraunces.
+ *
+ * Sin imágenes a propósito: escala con el texto, hereda el color del tema y no
+ * añade una petición más a un sitio que hoy no hace ninguna a dominios externos.
+ */
+import { site } from '../site';
+
+interface Props {
+  size?: 'sm' | 'md';
+}
+
+const { size = 'md' } = Astro.props;
+---
+
+<span class:list={['monogram', size]} aria-hidden="true">{site.initials}</span>
+
+<style>
+  .monogram {
+    display: inline-grid;
+    place-items: center;
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    /* El texto se asienta ópticamente un pelo alto dentro de la caja. */
+    line-height: 1;
+    padding-top: 0.06em;
+    flex: none;
+  }
+
+  .md {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-size: 0.82rem;
+  }
+
+  .sm {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.7rem;
+  }
+</style>

@@ -4,49 +4,60 @@ import Base from '../layouts/Base.astro';
 import CaseCard from '../components/CaseCard.astro';
 import { site } from '../site';
 
-const cases = (await getCollection('cases')).sort(
+/* `featured` ya no agranda la tarjeta: todas son iguales. Solo decide el orden,
+   y dentro de cada grupo mandan las más recientes. */
+const cases = (await getCollection('cases')).sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.date.getTime() - a.data.date.getTime();
+});
+
+const notes = (await getCollection('notes')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
-
-/* El caso destacado más reciente encabeza la página; el resto va en filas
-   compactas. Una lista uniforme no tiene punto focal. */
-const featured = cases.find((c) => c.data.featured) ?? cases[0];
-const rest = cases.filter((c) => c !== featured);
+const latestNote = notes[0];
 ---
 
 <Base title={site.name}>
-  <section class="content-grid intro">
-    {/* La portada arranca en el borde ancho, el mismo que las tarjetas y el
-        rótulo de sección: un héroe indentado respecto a lo que viene debajo se
-        lee como desalineado, no como deliberado. */}
-    <div class="wide intro-inner">
-      <p class="eyebrow">{site.name} — Data analyst</p>
-      <h1>{site.tagline}</h1>
-      <p class="lede">
-        Each case starts from a decision someone had to make, runs on real data with its cleaning
-        documented step by step, and ends in recommendations that state their own limits. The full
-        evidence — logs, notebooks, reconciliation counts — lives in each case's repository.
-      </p>
-    </div>
+  <section class="shell intro">
+    <h1>{site.tagline}</h1>
+    <p class="lede">
+      Each case starts from a decision someone had to make, runs on real data with its cleaning
+      documented step by step, and ends in recommendations that state their own limits. The full
+      evidence — logs, notebooks, reconciliation counts — lives in each case's repository.
+    </p>
   </section>
 
-  <section class="content-grid work" aria-labelledby="work">
-    <p class="eyebrow section-label" id="work">Selected work</p>
-
-    {featured && <div class="wide featured-slot"><CaseCard entry={featured} variant="featured" /></div>}
+  <section class="shell work" aria-labelledby="work">
+    <div class="section-head">
+      <h2 class="eyebrow" id="work">Selected work</h2>
+      <p class="eyebrow count">{cases.length} {cases.length === 1 ? 'case' : 'cases'}</p>
+    </div>
 
     {
-      rest.length > 0 && (
-        <div class="wide rest">
-          {rest.map((entry) => (
-            <CaseCard entry={entry} variant="compact" />
-          ))}
+      cases.length === 0 ? (
+        <p class="muted">No cases published yet.</p>
+      ) : (
+        <div class="card-grid">
+          {cases.map((entry) => <CaseCard entry={entry} />)}
         </div>
       )
     }
-
-    {cases.length === 0 && <p class="muted">No cases published yet.</p>}
   </section>
+
+  {
+    latestNote && (
+      <section class="shell notes-teaser" aria-labelledby="latest-note">
+        <div class="section-head">
+          <h2 class="eyebrow" id="latest-note">Latest note</h2>
+          <p class="eyebrow"><a href="/notes/">All notes →</a></p>
+        </div>
+        <a href={`/notes/${latestNote.id}/`} class="note-link">
+          <span class="note-title">{latestNote.data.title}</span>
+          <span class="note-summary">{latestNote.data.summary}</span>
+        </a>
+      </section>
+    )
+  }
 </Base>
 
 <style>
@@ -55,7 +66,7 @@ const rest = cases.filter((c) => c !== featured);
   }
 
   .intro h1 {
-    margin: var(--space-xs) 0 var(--space-m);
+    margin: 0 0 var(--space-m);
     max-width: 17ch;
   }
 
@@ -63,21 +74,69 @@ const rest = cases.filter((c) => c !== featured);
     max-width: 54ch;
   }
 
-  .section-label {
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-m);
     padding-bottom: var(--space-2xs);
     border-bottom: 1px solid var(--rule);
     margin-bottom: var(--space-l);
   }
 
-  /* El rótulo de sección se alinea con las tarjetas, no con la columna de
-     texto: marca el ancho del bloque que encabeza. */
-  .work > .section-label {
-    grid-column: wide;
+  .section-head h2 {
+    margin: 0;
+    font-family: var(--font-sans);
   }
 
-  .rest {
+  .section-head a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .section-head a:hover {
+    color: var(--accent);
+  }
+
+  .count {
+    color: var(--ink-soft);
+  }
+
+  /* `auto-fill` en vez de `auto-fit`: con auto-fit una sola tarjeta se estiraría
+     a todo el ancho y parecería un error de maquetación. Así conserva su tamaño
+     y la rejilla se llena sola conforme entren más casos. */
+  .card-grid {
     display: grid;
-    gap: var(--space-l);
-    margin-top: var(--space-xl);
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 24rem));
+    gap: var(--space-m);
+  }
+
+  .notes-teaser {
+    margin-top: var(--space-2xl);
+  }
+
+  .note-link {
+    display: grid;
+    gap: var(--space-3xs);
+    text-decoration: none;
+    max-width: var(--measure);
+  }
+
+  .note-title {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .note-link:hover .note-title {
+    color: var(--accent);
+  }
+
+  .note-summary {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
   }
 </style>
