@@ -95,6 +95,15 @@ demonstrates: # qué demuestra este caso que los demás no
 de la sección 1. No es casualidad: **la matriz se puede generar a partir de los front-matter**,
 en vez de mantenerse a mano y quedar desactualizada al tercer caso.
 
+> **`demonstrates` es metadato, no copia de página.** El cuerpo del caso ya tiene su sección
+> *What this demonstrates* como séptima del orden fijo, con espacio para prosa. El campo del
+> front-matter es la versión de una frase, y existe para alimentar la matriz de cobertura.
+>
+> Este contrato salió con las dos cosas a la vez y la plantilla del sitio las pintaba ambas: el
+> bloque entero aparecía duplicado al final de cada caso publicado. Si un campo del front-matter
+> y una sección del cuerpo dicen lo mismo, hay que decidir cuál manda **antes** de que el sitio
+> renderice los dos.
+
 ### El traspaso: qué cruza del repositorio al sitio
 
 Regla dura: **el sitio solo transporta agregados, nunca datos crudos ni intermedios.**

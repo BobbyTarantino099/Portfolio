@@ -23,7 +23,7 @@ const dateLabel = d.date.toLocaleDateString('en-GB', {
 
 <Base title={d.title} description={d.summary}>
   <article>
-    <header class="case-head">
+    <header class="content-grid case-head">
       <p class="eyebrow">
         <a href="/">Work</a> <span aria-hidden="true">/</span> {d.domain}
       </p>
@@ -31,24 +31,21 @@ const dateLabel = d.date.toLocaleDateString('en-GB', {
       <h1>{d.title}</h1>
       <p class="lede">{d.summary}</p>
 
-      <ul class="tags">
-        {d.tools.map((tool) => <li class="tag">{tool}</li>)}
-        <li class="tag">{d.scale}</li>
-      </ul>
-
-      <figure class="hero">
+      <div class="figure-surface hero wide">
         <Image
           src={d.hero}
           alt={d.heroAlt}
           widths={[640, 1024, 1440]}
-          sizes="(max-width: 72rem) 100vw, 68rem"
+          sizes="(max-width: 64rem) 100vw, 60rem"
           loading="eager"
         />
-      </figure>
+      </div>
 
-      <dl class="meta">
+      <dl class="meta wide">
         <div><dt>Problem type</dt><dd>{d.problemType}</dd></div>
         <div><dt>Domain</dt><dd>{d.domain}</dd></div>
+        <div><dt>Tools</dt><dd>{d.tools.join(' · ')}</dd></div>
+        <div><dt>Scale</dt><dd>{d.scale}</dd></div>
         <div><dt>Published</dt><dd>{dateLabel}</dd></div>
         <div>
           <dt>Evidence</dt>
@@ -65,97 +62,123 @@ const dateLabel = d.date.toLocaleDateString('en-GB', {
       </dl>
     </header>
 
-    <div class="prose case-body">
+    <div class="content-grid case-body">
       <Content />
     </div>
 
-    <footer class="case-foot prose">
-      <h2>What this demonstrates</h2>
-      <p>{d.demonstrates}</p>
-      {
-        d.repo && (
+    {
+      /* `demonstrates` NO se renderiza aquí: el cuerpo del Markdown ya trae la
+         sección "What this demonstrates" como séptima del contrato, y pintar
+         ambas duplicaba el bloque entero. El campo del front-matter se queda
+         como metadato para la matriz de cobertura del portafolio. */
+      d.repo && (
+        <footer class="content-grid case-foot">
           <p>
             Cleaning log, analysis scripts and the full case record are in the{' '}
             <a href={d.repo}>case repository</a>.
           </p>
-        )
-      }
-    </footer>
+        </footer>
+      )
+    }
   </article>
 </Base>
 
 <style>
   .case-head {
-    margin-bottom: 3rem;
-  }
-
-  .eyebrow {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-xl);
   }
 
   .eyebrow a {
-    color: var(--text-muted);
+    color: inherit;
+    text-decoration-color: var(--rule);
   }
 
   .case-head h1 {
-    max-width: 24ch;
+    margin: var(--space-s) 0 var(--space-m);
+    max-width: 21ch;
   }
 
-  .lede {
-    font-size: 1.15rem;
-    color: var(--text-muted);
-    max-width: var(--measure);
+  .case-head .lede {
+    margin-bottom: var(--space-l);
   }
 
   .hero {
-    margin: 2rem 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--figure-bg);
-    padding: var(--figure-pad);
+    margin-bottom: var(--space-m);
   }
 
   .meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    gap: 1rem 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: var(--space-s) var(--space-m);
     margin: 0;
-    padding: 1.25rem 0;
-    border-block: 1px solid var(--border);
+    padding-block: var(--space-s);
+    border-block: 1px solid var(--rule);
   }
 
   .meta dt {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 550;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 0.2rem;
+    letter-spacing: 0.11em;
+    color: var(--ink-soft);
+    margin-bottom: var(--space-3xs);
   }
 
   .meta dd {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
   }
 
-  /* Las figuras del cuerpo del caso vienen del Markdown, sin clases propias. */
-  .case-body :global(img) {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+  /* --- Cuerpo del Markdown -------------------------------------------------
+     El contenido lo renderiza <Content />, así que sus elementos no llevan el
+     atributo de ámbito de Astro: hay que alcanzarlos con :global().
+     Las figuras, tablas y bloques de código escapan a la columna ancha; el
+     texto se queda en la medida de lectura. */
+
+  .case-body :global(> *:first-child) {
+    margin-top: 0;
+  }
+
+  /* Astro envuelve las imágenes de Markdown en un <p>, así que el lienzo
+     blanco se aplica al párrafo contenedor. */
+  .case-body :global(p:has(> img)) {
+    grid-column: wide;
     background: var(--figure-bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
     padding: var(--figure-pad);
-    margin: 1.75rem 0;
+    margin-block: var(--space-l);
+  }
+
+  /* Las tablas de Markdown no traen envoltorio y, siendo hijas directas de la
+     rejilla, no pueden encogerse por debajo del ancho mínimo de sus columnas:
+     en móvil desbordaban la página entera (medido: 103 px). Convertirlas en
+     bloque les da un contenedor que absorbe el scroll horizontal.
+     Un plugin de rehype sería más limpio, pero Astro 7 usa Sätteri como
+     procesador de Markdown y habilitarlos obligaría a instalar el procesador
+     antiguo entero. */
+  .case-body :global(table) {
+    grid-column: wide;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .case-body :global(pre) {
+    grid-column: wide;
   }
 
   .case-foot {
-    margin-top: 3.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
+    margin-top: var(--space-xl);
   }
 
-  .case-foot h2 {
-    margin-top: 0;
+  .case-foot p {
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--rule);
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    margin: 0;
   }
 </style>

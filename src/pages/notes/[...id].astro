@@ -16,39 +16,72 @@ const d = entry.data;
 ---
 
 <Base title={d.title} description={d.summary}>
-  <article class="prose">
-    <p class="eyebrow"><a href="/notes/">Notes</a></p>
-    <h1>{d.title}</h1>
-    <p class="byline">
-      <time datetime={d.date.toISOString()}>
-        {d.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
-      </time>
-      {d.tags.length > 0 && <> · {d.tags.join(' · ')}</>}
-    </p>
-    <Content />
+  <article>
+    <header class="content-grid note-head">
+      <p class="eyebrow">
+        <a href="/notes/">Notes</a>
+      </p>
+      <h1>{d.title}</h1>
+      <p class="byline">
+        <time datetime={d.date.toISOString()}>
+          {d.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        {d.tags.length > 0 && <> · {d.tags.join(' · ')}</>}
+      </p>
+    </header>
+
+    <div class="content-grid note-body">
+      <Content />
+    </div>
   </article>
 </Base>
 
 <style>
-  .eyebrow {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
+  .note-head {
+    margin-bottom: var(--space-l);
   }
 
   .eyebrow a {
-    color: var(--text-muted);
+    color: inherit;
+    text-decoration-color: var(--rule);
+  }
+
+  .note-head h1 {
+    margin: var(--space-s) 0 var(--space-m);
+    max-width: 24ch;
   }
 
   .byline {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 2.5rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    margin: 0;
   }
 
-  article :global(img) {
-    border: 1px solid var(--border);
+  /* El contenido viene de <Content />, sin atributo de ámbito: :global(). */
+  .note-body :global(> *:first-child) {
+    margin-top: 0;
+  }
+
+  .note-body :global(pre) {
+    grid-column: wide;
+  }
+
+  /* Mismo motivo que en la página de caso: sin envoltorio, una tabla de
+     Markdown desborda la página en móvil. Ver cases/[...id].astro. */
+  .note-body :global(table) {
+    grid-column: wide;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .note-body :global(p:has(> img)) {
+    grid-column: wide;
+    background: var(--figure-bg);
+    border: 1px solid var(--rule);
     border-radius: var(--radius);
-    margin: 1.75rem 0;
+    padding: var(--figure-pad);
+    margin-block: var(--space-l);
   }
 </style>

@@ -39,52 +39,72 @@ const phases = [
     output: 'Recommendations ranked by impact against effort, with their limits stated.',
   },
 ];
+
+const layers = [
+  {
+    name: 'The card',
+    time: '15 seconds',
+    what: 'Headline, key chart, and what the case demonstrates. The home page.',
+  },
+  {
+    name: 'The case',
+    time: '5 minutes',
+    what: 'Context, data, process, findings, recommendations, limitations.',
+  },
+  {
+    name: 'The evidence',
+    time: '30 minutes',
+    what: 'Cleaning log, scripts, source records, the full case record. In the repository.',
+  },
+];
 ---
 
 <Base
   title="Method"
   description="How I run a data analysis case study: six phases, each with an exit gate that has to be passed before the next one starts."
 >
-  <div class="prose">
+  <article class="content-grid">
+    <p class="eyebrow">Method</p>
     <h1>How I work</h1>
 
-    <p>
+    <p class="lede">
       Every case on this site follows the same six phases, adapted from the Google Data Analytics
-      process. What I added is the part that makes it repeatable: <strong>each phase has an exit
-      gate</strong>, and I do not move to the next phase until every item on it is met. When
-      something fails, I go back rather than improvise forward — finding out during analysis that
-      the data cannot answer the question means returning to Ask, not writing a softer conclusion.
+      process. What I added is the part that makes it repeatable: each phase has an exit gate.
+    </p>
+
+    <p>
+      I do not move to the next phase until every item on that gate is met. When something fails, I
+      go back rather than improvise forward — finding out during analysis that the data cannot
+      answer the question means returning to Ask, not writing a softer conclusion.
     </p>
 
     <h2>The six phases</h2>
-  </div>
 
-  <div class="table-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Phase</th>
-          <th>Question it answers</th>
-          <th>What it produces</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          phases.map((p) => (
-            <tr>
-              <td>{p.n}</td>
-              <td><strong>{p.name}</strong></td>
-              <td>{p.question}</td>
-              <td>{p.output}</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+    <div class="wide table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Phase</th>
+            <th>Question it answers</th>
+            <th>What it produces</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            phases.map((p) => (
+              <tr>
+                <td class="num">{p.n}</td>
+                <td><strong>{p.name}</strong></td>
+                <td>{p.question}</td>
+                <td>{p.output}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
 
-  <div class="prose">
     <h2>Three rules I do not break</h2>
 
     <p>
@@ -111,38 +131,30 @@ const phases = [
       in each case's repository, for anyone who wants to check the work rather than take my word
       for it.
     </p>
-  </div>
 
-  <div class="table-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Layer</th>
-          <th>Time</th>
-          <th>What it is</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>The card</strong></td>
-          <td>15 seconds</td>
-          <td>Headline, key chart, and what the case demonstrates. The home page.</td>
-        </tr>
-        <tr>
-          <td><strong>The case</strong></td>
-          <td>5 minutes</td>
-          <td>Context, data, process, findings, recommendations, limitations.</td>
-        </tr>
-        <tr>
-          <td><strong>The evidence</strong></td>
-          <td>30 minutes</td>
-          <td>Cleaning log, scripts, source records, the full case record. In the repository.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="wide table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Time</th>
+            <th>What it is</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            layers.map((l) => (
+              <tr>
+                <td><strong>{l.name}</strong></td>
+                <td class="nowrap">{l.time}</td>
+                <td>{l.what}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
 
-  <div class="prose">
     <h2>How I choose what to work on next</h2>
 
     <p>
@@ -153,11 +165,28 @@ const phases = [
       contradicted my starting assumption. If a candidate case fills none of those gaps, the effort
       is better spent elsewhere.
     </p>
-  </div>
+  </article>
 </Base>
 
 <style>
-  h2 {
-    margin-top: 2.75rem;
+  h1 {
+    margin: var(--space-s) 0 var(--space-m);
+  }
+
+  /* Las tablas escapan a la columna ancha; en pantallas estrechas la rejilla
+     colapsa y el scroll horizontal vive dentro del contenedor, no en la página. */
+  .table-wrap {
+    overflow-x: auto;
+    margin-block: var(--space-m) var(--space-l);
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  .nowrap {
+    white-space: nowrap;
   }
 </style>

@@ -11,70 +11,81 @@ const notes = (await getCollection('notes')).sort(
   title="Notes"
   description="Short notes on data analysis: things learned mid-case, techniques worth writing down."
 >
-  <div class="prose">
+  <section class="content-grid">
+    <p class="eyebrow">Notes</p>
     <h1>Notes</h1>
-    <p>
+    <p class="lede">
       Short pieces that are not full case studies: something learned mid-analysis, a technique
       worth writing down, a chart that needed a comment. Cases take weeks; these do not.
     </p>
-  </div>
 
-  {
-    notes.length === 0 ? (
-      <p class="muted">No notes yet.</p>
-    ) : (
-      <ul class="note-list">
-        {notes.map((note) => (
-          <li>
-            <a href={`/notes/${note.id}/`}>{note.data.title}</a>
-            <p class="muted">{note.data.summary}</p>
-            <time datetime={note.data.date.toISOString()}>
-              {note.data.date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long' })}
-            </time>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+    {
+      notes.length === 0 ? (
+        <p class="muted">No notes yet.</p>
+      ) : (
+        <ul class="note-list">
+          {notes.map((note) => (
+            <li>
+              <time datetime={note.data.date.toISOString()} class="eyebrow">
+                {note.data.date.toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'long',
+                })}
+                {note.data.tags.length > 0 && <> · {note.data.tags.join(' · ')}</>}
+              </time>
+              <h2><a href={`/notes/${note.id}/`}>{note.data.title}</a></h2>
+              <p class="muted">{note.data.summary}</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
 </Base>
 
 <style>
+  h1 {
+    margin: var(--space-s) 0 var(--space-m);
+  }
+
   .note-list {
     list-style: none;
     padding: 0;
-    margin: 2.5rem 0 0;
+    margin: var(--space-xl) 0 0;
     display: grid;
-    gap: 2rem;
-    max-width: var(--measure);
+    gap: var(--space-l);
   }
 
   .note-list > li {
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
+    position: relative;
+    padding-top: var(--space-l);
+    border-top: 1px solid var(--rule);
   }
 
-  .note-list > li:last-child {
-    border-bottom: 0;
+  .note-list h2 {
+    font-size: 1.4rem;
+    line-height: 1.25;
+    margin: var(--space-2xs) 0;
   }
 
-  .note-list a {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--text);
+  .note-list h2 a {
+    color: inherit;
     text-decoration: none;
   }
 
-  .note-list a:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
+  /* Toda la fila es zona de clic, con un solo enlace en el árbol de accesibilidad. */
+  .note-list h2 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .note-list h2 a:hover {
+    color: var(--accent);
   }
 
   .note-list p {
-    margin: 0.4rem 0 0.5rem;
-  }
-
-  time {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.9375rem;
   }
 </style>

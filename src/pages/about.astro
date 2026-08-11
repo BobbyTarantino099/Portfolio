@@ -13,8 +13,9 @@ const tools = {
 ---
 
 <Base title="About" description={`About ${site.name} — ${site.tagline}`}>
-  <div class="prose">
-    <h1>About</h1>
+  <article class="content-grid">
+    <p class="eyebrow">About</p>
+    <h1>{site.name}</h1>
 
     <p class="lede">{site.tagline}</p>
 
@@ -28,72 +29,71 @@ const tools = {
     </div>
 
     <h2>Tools</h2>
-  </div>
 
-  <dl class="tools">
-    {
-      Object.entries(tools).map(([label, items]) => (
-        <div>
-          <dt>{label}</dt>
-          <dd>
-            <ul class="tags">
-              {items.map((t) => <li class="tag">{t}</li>)}
-            </ul>
-          </dd>
-        </div>
-      ))
-    }
-  </dl>
+    <dl class="tools">
+      {
+        Object.entries(tools).map(([label, items]) => (
+          <div>
+            <dt class="eyebrow">{label}</dt>
+            <dd>
+              <ul class="tags">
+                {items.map((t) => <li class="tag">{t}</li>)}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
 
-  <div class="prose">
     <h2>Get in touch</h2>
-    <ul>
+    <ul class="contact">
       <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
       {site.links.linkedin && <li><a href={site.links.linkedin}>LinkedIn</a></li>}
       {site.links.github && <li><a href={site.links.github}>GitHub</a></li>}
       {site.links.cv && <li><a href={site.links.cv}>Download CV (PDF)</a></li>}
     </ul>
-  </div>
+  </article>
 </Base>
 
 <style>
-  .lede {
-    font-size: 1.15rem;
-    color: var(--text-muted);
+  h1 {
+    margin: var(--space-s) 0 var(--space-m);
   }
 
-  /* Aviso visible en desarrollo para que no se publique una pagina a medias. */
+  /* Aviso visible en desarrollo para que no se publique una página a medias. */
   .todo {
-    border: 1px dashed var(--border);
+    border: 1px dashed var(--rule);
     border-left: 3px solid var(--accent);
     background: var(--surface);
     border-radius: var(--radius);
-    padding: 1rem 1.15rem;
-    margin: 2rem 0;
+    padding: var(--space-s) var(--space-m);
+    margin-block: var(--space-l);
   }
 
   .todo p {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
   }
 
   .tools {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 1.5rem;
-    margin: 1.5rem 0 0;
-    max-width: var(--measure);
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-m);
+    margin: var(--space-m) 0 0;
   }
 
   .tools dt {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-2xs);
   }
 
   .tools dd {
     margin: 0;
+  }
+
+  .contact {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3xs);
   }
 </style>
