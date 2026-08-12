@@ -68,14 +68,15 @@ const layers = [
     <h1>How I work</h1>
 
     <p class="lede">
-      Every case on this site follows the same six phases, adapted from the Google Data Analytics
-      process. What I added is the part that makes it repeatable: each phase has an exit gate.
+      Every case on this site runs through the same six phases — and so does most of my paid work,
+      where this process sits behind financial reporting that people make decisions on. What makes
+      it a method rather than a habit is that every phase has an exit gate.
     </p>
 
     <p>
-      I do not move to the next phase until every item on that gate is met. When something fails, I
-      go back rather than improvise forward — finding out during analysis that the data cannot
-      answer the question means returning to Ask, not writing a softer conclusion.
+      I don&rsquo;t move to the next phase until every item on that gate is met. When something
+      fails, I go back rather than improvise forward — finding out during analysis that the data
+      can&rsquo;t answer the question means returning to Ask, not writing a softer conclusion.
     </p>
 
     <h2>The six phases</h2>
@@ -105,30 +106,32 @@ const layers = [
       </table>
     </div>
 
-    <h2>Three rules I do not break</h2>
+    <h2>Three rules I don&rsquo;t break</h2>
 
     <p>
-      <strong>Everything is documented as it happens, not afterwards.</strong> In three of the six
-      phases the documentation <em>is</em> the deliverable. Reconstructing decisions from memory
-      produces weak case studies, and that is exactly the detail an experienced reviewer notices.
+      <strong>I document as I go, never afterwards.</strong> In three of the six phases the
+      documentation <em>is</em> the deliverable. Reconstructing decisions from memory produces weak
+      work, and it&rsquo;s exactly the detail an experienced reviewer notices.
     </p>
 
     <p>
-      <strong>No invented numbers.</strong> If a figure did not come out of the data, it does not
-      enter the report. Where there is a gap, it is declared as a limitation.
+      <strong>I don&rsquo;t invent numbers.</strong> If a figure didn&rsquo;t come out of the data,
+      it doesn&rsquo;t enter the report. Where there&rsquo;s a gap, I declare it as a limitation
+      instead of papering over it.
     </p>
 
     <p>
-      <strong>Raw data is never edited in place.</strong> Every transformation produces a new file
-      and an entry in the cleaning log, so the whole chain can be re-run from the original source.
+      <strong>I never edit raw data in place.</strong> Every transformation produces a new file and
+      an entry in the cleaning log, so the whole chain can be re-run from the original source — by
+      me next month, or by you today.
     </p>
 
     <h2>What you can read, and how deep</h2>
 
     <p>
-      A case study produces far more material than anyone wants to read at once, so it is published
-      in three layers. This page and the case pages are the first two; the third is one click away
-      in each case's repository, for anyone who wants to check the work rather than take my word
+      A case study produces far more material than anyone wants to read at once, so I publish it in
+      three layers. This page and the case pages are the first two; the third is one click away in
+      each case&rsquo;s repository, for anyone who&rsquo;d rather check the work than take my word
       for it.
     </p>
 
@@ -155,15 +158,26 @@ const layers = [
       </table>
     </div>
 
-    <h2>How I choose what to work on next</h2>
+    <h2>Where the questions come from</h2>
 
     <p>
-      A portfolio is an argument about what you can do, not a folder of projects — three cases
-      demonstrating different things beat eight demonstrating the same one. So before starting a
-      case I check what it would add along four axes: the <strong>type of problem</strong>, the{' '}
-      <strong>main tool</strong>, the <strong>kind of data</strong>, and whether the result has ever
-      contradicted my starting assumption. If a candidate case fills none of those gaps, the effort
-      is better spent elsewhere.
+      I pick questions I actually want answered. The Steam case started because I wanted to know
+      whether cheap games really are worse, or whether that&rsquo;s just something people repeat —
+      and the only honest way to settle it was to go and look. That&rsquo;s the first filter: if
+      I&rsquo;m not curious enough to argue with my own result, the case won&rsquo;t be worth
+      defending to anyone else.
+    </p>
+
+    <p>
+      The second filter is what a case will teach me. Each one is chosen partly for the tool or
+      technique I want to get better at, which is why the next will lean on <strong>SQL</strong>:
+      it&rsquo;s what I use daily at work, and nothing here shows it yet.
+    </p>
+
+    <p class="lineage">
+      The six-phase spine — Ask, Prepare, Process, Analyse, Share, Act — comes from the Google Data
+      Analytics process. The exit gates, the three-layer publishing model and the templates behind
+      every case are mine, built while running this on real work.
     </p>
   </article>
 </Base>
@@ -188,6 +202,16 @@ const layers = [
   .num {
     font-family: var(--font-mono);
     font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  /* El linaje va al cierre y en voz baja: reconoce de dónde viene el esqueleto
+     sin que la página abra sonando a curso. */
+  .lineage {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--rule);
+    font-size: 0.875rem;
     color: var(--ink-soft);
   }
 
