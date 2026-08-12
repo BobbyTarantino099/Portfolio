@@ -170,6 +170,17 @@ Firma                monograma, al pie derecha
 El salto de tamaño y de color entre los tres niveles de cabecera es deliberado y **más agresivo de
 lo que parece natural**. Un titular apenas mayor que el subtítulo no jerarquiza nada.
 
+**El aire entre niveles se mide en puntos, no en fracción del lienzo.** Es la regla menos obvia de
+esta sección y la que más rompe cuando se ignora: la tipografía tiene tamaño absoluto, así que un
+espaciado expresado como porcentaje de la altura de la figura se aprieta al bajar el lienzo y se
+desparrama al subirlo. El mismo diseño que respira a 6,8 pulgadas de alto **colisiona a 6,2**, y
+el fallo no aparece hasta que alguien cambia un `figsize`.
+
+Corolario práctico: el alto de cada bloque de texto se **mide** del texto ya compuesto
+(`get_window_extent`), no se estima contando caracteres. `textwrap` ya sabe cuántas líneas salieron
+y el renderizador sabe cuánto ocupan; estimarlo es elegir equivocarse con titulares que reparten
+mal las palabras.
+
 ### La paleta
 
 Un acento único y fuerte, gris neutro para todo lo demás, un cálido secundario para el otro lado
@@ -254,17 +265,36 @@ Convierte "acordarse de doce reglas" en llamar a tres funciones:
 | `aplicar()` | `rcParams`: tipografía, tamaños, sin marco superior ni derecho, cuadrícula tenue |
 | `figura(titular, subtitulo, periodo, fuente, nota)` | Devuelve `fig, ax` con cabecera, nota de fuente y firma ya compuestos |
 | `destacar(categorias, protagonistas)` | Lista de colores para el contraste dirigido |
+| `leyenda(ax)` | Leyenda enmarcada, colocada en el hueco más libre de datos |
 | `anotar(ax, texto, xy, xytexto)` | Anotación con flecha en el estilo de la identidad |
 | `dumbbell(ax, categorias, desde, hasta)` | La forma de la sección 7 |
 | `tabla_matriz(...)` y `tabla_ranking(...)` | Las tablas-figura de la sección 6 |
 | `guardar(fig, ruta)` | dpi uniforme |
 
-**Dos cosas que el módulo resuelve y conviene no deshacer:**
+### La leyenda va donde no hay datos
+
+**Nunca se fija a mano.** `loc="lower right"` funciona hasta que los datos cambian de forma; así
+es como una leyenda acabó metida entre las barras del primer grupo, ilegible y sin sentido.
+`leyenda()` usa `loc="best"`, que evalúa el solapamiento real con las marcas dibujadas y elige.
+
+Dos detalles que la convierten en bloque en vez de texto flotante: **relleno opaco** y borde fino.
+El relleno importa tanto como el borde — es lo que la despega de la cuadrícula.
+
+Y el caso que `best` no puede resolver solo: **cuando no hay ningún hueco**. Con barras desde cero
+que llenan el panel, las nueve anclas están ocupadas y `best` devuelve la menos mala, que sigue
+pisando datos. Ahí `leyenda()` abre sitio subiendo el techo del eje y la recoloca —ampliar el eje
+sin recolocar no sirve, porque `best` ya eligió y no se reevalúa solo—. La base en cero no se
+toca: solo se añade aire arriba, así que no distorsiona nada.
+
+**Tres cosas que el módulo resuelve y conviene no deshacer:**
 
 - `guardar()` **no usa `bbox_inches='tight'`**. La cabecera y la firma viven fuera de los ejes; el
   recorte automático se los come.
 - El margen inferior no baja de 0.16. Por debajo de eso el rótulo del eje X se solapa con la nota
   de fuente cuando la nota ocupa dos líneas.
+- El ritmo vertical vive en las constantes `GAP_*`, en puntos. Tocar esos números cambia el
+  espaciado de **todas** las figuras a la vez: es lo que las hace parecer una familia en vez de
+  cuatro gráficos con el mismo color.
 
 Después de generar, **abrir las figuras y mirarlas**. El módulo garantiza la composición, no que
 una anotación no cruce una etiqueta vecina. Eso solo se ve mirando.
@@ -313,6 +343,7 @@ conflicto) y **trama** (qué muestran los datos y qué implica).
 - [ ] Paleta validada sobre el fondo real, no elegida a ojo.
 - [ ] Forma revisada contra el catálogo de la sección 7 antes de aceptar la obvia.
 - [ ] Figuras abiertas y miradas: ninguna anotación cruza una etiqueta vecina.
+- [ ] La cabecera tiene aire entre sus tres niveles, y ninguna leyenda pisa los datos.
 - [ ] Ningún elemento 3D, ninguna sombra, cuadrícula mínima.
 - [ ] Ordenado por valor salvo que el orden tenga significado.
 - [ ] Información nunca codificada solo con color.
@@ -330,6 +361,8 @@ conflicto) y **trama** (qué muestran los datos y qué implica).
 - Barras agrupadas de dos series donde el hallazgo es una diferencia: eso es un dumbbell.
 - Mapa de calor donde el lector necesita el número exacto: eso es una tabla-matriz.
 - Dar la figura por buena porque el script no dio error, sin abrir el PNG.
+- Espaciar la cabecera en fracciones del lienzo: funciona a un tamaño y colisiona a otro.
+- Fijar la leyenda a una esquina y no volver a mirarla cuando los datos cambian de forma.
 - Paleta de arcoíris para una variable ordenada: no tiene orden perceptual.
 - Escalar burbujas por diámetro en lugar de por área.
 - Mostrar los quince gráficos producidos en vez de los cuatro que argumentan.
