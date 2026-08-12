@@ -1,10 +1,14 @@
-# Anexo — Visualización y Tableau
+# Anexo — Visualización
 
-Detalle operativo de la fase **Compartir**: cómo elegir el tipo de gráfico, cómo construirlo en
-Tableau, y cómo verificar diseño y accesibilidad antes de publicar.
+Detalle operativo de la fase **Compartir**: cómo elegir el tipo de gráfico, qué identidad visual
+aplicarle, y cómo verificar diseño y accesibilidad antes de publicar.
 
 `05-compartir.md` cubre el marco (audiencia, método McCandless, filtro de tres partes). Este anexo
-es el catálogo y la mecánica.
+es el catálogo, la identidad y la mecánica.
+
+Las secciones **1 a 4 son buenas prácticas**: evitan que el gráfico esté mal. Las secciones **5 a
+8 son la identidad**: consiguen que el gráfico se vea propio. Son cosas distintas y hacen falta
+las dos.
 
 ---
 
@@ -140,38 +144,151 @@ Los seis que el certificado destaca, con su uso analítico:
 
 ---
 
-## 5. Tableau: mecánica y vocabulario
+## 5. La identidad visual
 
-Vale la pena solo si el caso justifica interactividad o si quieres demostrar la herramienta. Para un
-gráfico estático en un README, matplotlib o la hoja de cálculo bastan.
+Las secciones 1 a 4 son buenas prácticas: las cumple cualquiera. Lo que hace que una figura se
+reconozca como tuya antes de leer el titular es otra cosa, y es lo que define esta sección.
 
-**Conceptos:**
+**El problema que resuelve.** Un gráfico puede cumplir todos los principios —titular con el
+hallazgo, un color protagonista, gris de contexto, nota de fuente— y aun así salir con aspecto de
+matplotlib por defecto. Cumplir los principios evita que el gráfico esté mal; no consigue que se
+vea propio.
 
-- **Dimensiones** (azul, discretas) → categorías. **Medidas** (verde, continuas) → números que se
-  agregan.
-- **Marks card:** controla color, tamaño, etiqueta, detalle y tooltip de cada marca. Es donde se
-  hace el 80 % del diseño.
-- **Show Me:** sugiere tipos de gráfico según lo que arrastraste. Útil para explorar, **peligroso
-  como decisión final**: elige por objetivo, no por lo que Tableau propone primero.
-- **Campo calculado:** columnas derivadas dentro de Tableau. Documéntalas como cualquier otra
-  transformación de la fase 3.
-- **Data blending:** combina datos de fuentes distintas a nivel de agregado. Distinto de un JOIN, que
-  combina a nivel de fila. Confundirlos produce números que no cuadran.
-- **Dashboard:** varias vistas juntas, con filtros y acciones que las conectan. Monitorea datos que
-  se actualizan.
-- **Story:** secuencia de vistas con narrativa. Es la opción adecuada para un caso de estudio.
-- **Tooltip:** el detalle que aparece al pasar el cursor. Aprovéchalo para poner el número exacto y
-  aligerar el gráfico.
+### La composición, idéntica en toda figura
 
-**Publicar:** Tableau Public es gratuito y enlazable desde el portafolio. Cualquier cosa que subas
-ahí **es pública**. Verifica que no haya datos sensibles antes de publicar.
+```
+Titular              ~18 pt, peso 700, negro casi puro, alineado a la izquierda
+Subtítulo            ~12 pt, gris medio — define la métrica y el alcance
+Línea de periodo     ~9 pt, versalitas, gris claro — opcional
+─────────────────────────────────────────────
+[ el gráfico, sin marco ]
+─────────────────────────────────────────────
+Fuente + nota        ~8 pt, gris claro, al pie izquierda
+Firma                monograma, al pie derecha
+```
 
-**Visualizaciones dinámicas:** interactivas o que cambian solas. Justifícalas — si el hallazgo se
-entiende igual en una imagen estática, la interactividad es fricción para el lector.
+El salto de tamaño y de color entre los tres niveles de cabecera es deliberado y **más agresivo de
+lo que parece natural**. Un titular apenas mayor que el subtítulo no jerarquiza nada.
+
+### La paleta
+
+Un acento único y fuerte, gris neutro para todo lo demás, un cálido secundario para el otro lado
+de una comparación, y una rampa secuencial de un solo tono para intensidad. Todo validado sobre
+fondo blanco antes de fijarlo — **la paleta se computa, no se elige a ojo**.
+
+El acento debe ser el mismo color que usa el sitio donde se publica la figura. Si el gráfico y la
+página hablan idiomas distintos, la figura parece pegada.
+
+### La firma
+
+Toda figura lleva monograma. Ninguna sale sin marca, ni siquiera las de trabajo interno: es lo que
+convierte una captura reenviada en una figura atribuible. Se dibuja **con texto, no con imagen**,
+para no arrastrar un archivo por caso.
+
+### Lo que no se puede copiar de las referencias deportivas
+
+Las visualizaciones de Sportradar, Synergy o Sportico usan **logos, fotos y escudos como marcas**
+en lugar de puntos y barras. Es su rasgo más reconocible y **no transfiere** a datos sin
+iconografía —géneros de un catálogo, franjas de precio, cohortes—. Perseguirlo es perder el
+tiempo. Sin logos, la identidad se sostiene en cuatro sitios, y son justo los que el módulo
+garantiza por defecto:
+
+1. El bloque de cabecera, con su salto tipográfico.
+2. La firma, presente en toda figura.
+3. La anotación directiva: llaves, flechas, etiquetas de cuadrante, texto dentro de las bandas.
+4. El tratamiento del número protagonista: grande, en el acento, o dentro de una celda codificada.
 
 ---
 
-## 6. Del gráfico a la historia
+## 6. La tabla como figura de pleno derecho
+
+**Cuando el número exacto importa, una tabla bien compuesta gana a cualquier gráfico.** No es el
+premio de consolación de quien no supo elegir una forma: es la forma correcta cuando el lector
+necesita leer valores, no estimarlos.
+
+Un mapa de calor obliga a leer el color y adivinar el número. Una tabla-matriz muestra el número y
+usa el color como refuerzo. Casi siempre es mejor cambio.
+
+**Anatomía:**
+
+- Cabecera de columnas en versalitas pequeñas y negrita, con una regla debajo.
+- Filas altas, con aire. Separadores finísimos o ninguno.
+- **Columna de entidad a dos niveles:** etiqueta principal en negrita, secundaria debajo en gris
+  más pequeño y en versalitas (el `n`, la fecha, la categoría padre).
+- Columnas numéricas alineadas a la derecha, con cifras tabulares para que los dígitos cuadren.
+- **La columna clave va codificada:** celda con degradado, píldora de color, o cifra mucho mayor y
+  en el acento. Es lo único que separa una tabla-figura de un volcado de datos.
+
+Con celdas codificadas, el texto cambia a blanco a partir del escalón donde el fondo se oscurece.
+Comprobarlo, no suponerlo.
+
+---
+
+## 7. Catálogo de formas que la sección 1 no cubre
+
+| Forma | Cuándo usarla |
+|---|---|
+| **Dumbbell** | Dos estados por categoría. Muestra la diferencia **como distancia**, que es lo que suele decir el hallazgo. Sustituye a las barras agrupadas casi siempre |
+| **Slope** | Dos momentos y lo que importa es el cambio de posición, no la magnitud |
+| **Small multiples** | El mismo gráfico repetido por categoría. La forma natural de un control: el patrón se ve repetirse |
+| **Lollipop** | Alternativa a barras cuando la masa de la barra es ruido y solo el extremo aporta |
+| **Dispersión con cuadrantes anotados** | Dos ejes con significado; las esquinas se etiquetan con el nombre del perfil, no con coordenadas |
+| **Barras apiladas al 100 % con el total al final** | Composición y magnitud a la vez, sin recurrir a un doble eje |
+| **Tabla-matriz con celdas codificadas** | Sección 6 |
+
+**Barras agrupadas de dos series es la elección por defecto que casi nunca es la mejor.** Obliga a
+comparar dos longitudes que arrancan de puntos distintos. Si las series son dos, probablemente sea
+un dumbbell.
+
+---
+
+## 8. El módulo `estilo.py`
+
+Está en `assets/estilo.py`. **Se copia a `notebooks/` del caso**, no se importa desde el
+framework: así el repo del caso es reproducible por sí solo, que es el punto de la capa L3.
+
+Convierte "acordarse de doce reglas" en llamar a tres funciones:
+
+| Función | Qué hace |
+|---|---|
+| `aplicar()` | `rcParams`: tipografía, tamaños, sin marco superior ni derecho, cuadrícula tenue |
+| `figura(titular, subtitulo, periodo, fuente, nota)` | Devuelve `fig, ax` con cabecera, nota de fuente y firma ya compuestos |
+| `destacar(categorias, protagonistas)` | Lista de colores para el contraste dirigido |
+| `anotar(ax, texto, xy, xytexto)` | Anotación con flecha en el estilo de la identidad |
+| `dumbbell(ax, categorias, desde, hasta)` | La forma de la sección 7 |
+| `tabla_matriz(...)` y `tabla_ranking(...)` | Las tablas-figura de la sección 6 |
+| `guardar(fig, ruta)` | dpi uniforme |
+
+**Dos cosas que el módulo resuelve y conviene no deshacer:**
+
+- `guardar()` **no usa `bbox_inches='tight'`**. La cabecera y la firma viven fuera de los ejes; el
+  recorte automático se los come.
+- El margen inferior no baja de 0.16. Por debajo de eso el rótulo del eje X se solapa con la nota
+  de fuente cuando la nota ocupa dos líneas.
+
+Después de generar, **abrir las figuras y mirarlas**. El módulo garantiza la composición, no que
+una anotación no cruce una etiqueta vecina. Eso solo se ve mirando.
+
+---
+
+## 9. Otras herramientas
+
+**Tableau / Power BI.** Valen la pena si el caso justifica interactividad real o si quieres
+demostrar la herramienta. Para una figura estática en un README o en una página, matplotlib basta
+y además queda versionada como código.
+
+Dos trampas que sí conviene recordar: *Show Me* sugiere gráficos según lo que arrastraste —útil
+para explorar, **peligroso como decisión final**—, y el *data blending* combina a nivel de
+agregado mientras que un JOIN combina a nivel de fila; confundirlos produce números que no cuadran.
+
+Lo que subas a Tableau Public **es público**. Verifica que no haya datos sensibles antes.
+
+**Interactividad:** justifícala. Si el hallazgo se entiende igual en una imagen estática, la
+interactividad es fricción para el lector.
+
+---
+
+## 10. Del gráfico a la historia
 
 Una historia de datos tiene tres partes: **personajes** (a quién afecta), **escenario** (contexto y
 conflicto) y **trama** (qué muestran los datos y qué implica).
@@ -192,6 +309,10 @@ conflicto) y **trama** (qué muestran los datos y qué implica).
 - [ ] Nota de fuente al pie.
 - [ ] Eje desde cero en todas las barras.
 - [ ] Un color protagonista, resto en gris.
+- [ ] Composición de la sección 5: cabecera de tres niveles, nota de fuente y firma.
+- [ ] Paleta validada sobre el fondo real, no elegida a ojo.
+- [ ] Forma revisada contra el catálogo de la sección 7 antes de aceptar la obvia.
+- [ ] Figuras abiertas y miradas: ninguna anotación cruza una etiqueta vecina.
 - [ ] Ningún elemento 3D, ninguna sombra, cuadrícula mínima.
 - [ ] Ordenado por valor salvo que el orden tenga significado.
 - [ ] Información nunca codificada solo con color.
@@ -206,6 +327,9 @@ conflicto) y **trama** (qué muestran los datos y qué implica).
 - Eje truncado en barras, que exagera diferencias reales pero pequeñas.
 - Mapa coroplético de conteos absolutos sin normalizar.
 - Aceptar lo que sugiere *Show Me* sin preguntarse si responde la pregunta.
+- Barras agrupadas de dos series donde el hallazgo es una diferencia: eso es un dumbbell.
+- Mapa de calor donde el lector necesita el número exacto: eso es una tabla-matriz.
+- Dar la figura por buena porque el script no dio error, sin abrir el PNG.
 - Paleta de arcoíris para una variable ordenada: no tiene orden perceptual.
 - Escalar burbujas por diámetro en lugar de por área.
 - Mostrar los quince gráficos producidos en vez de los cuatro que argumentan.

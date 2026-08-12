@@ -94,11 +94,11 @@ Adventure, Racing, Sports and RPG it's Q4 (>$12.36). No genre has its best recep
 This rules out the simplistic "more expensive is always better" reading: in half the genres, the
 most expensive band already trails Q3.
 
-### 3. The effect is real but moderate: 2.50 to 5.05 percentage points
+### 3. The effect is real but moderate: 2.50 to 5.04 percentage points
 
 ![Ranking of the price effect by genre, with Adventure, Indie and Casual highlighted as the strongest combined candidates.](./images/03-effect-ranking.png)
 
-The gap between Q1 and each genre's best band ranges from 2.51 p.p. (RPG) to 5.05 p.p.
+The gap between Q1 and each genre's best band ranges from 2.50 p.p. (RPG) to 5.04 p.p.
 (Adventure). Quantifying it matters: it supports a directional screening argument, not a claim
 that price alone transforms a product's reception. Adventure, Indie and Casual are the three that
 combine the best effect, volume (4,030, 5,561 and 2,230 games) and absolute reception (medians of
@@ -123,7 +123,7 @@ dismissed: it is documented as insufficient.
 
 | # | Recommendation | Evidence | Impact | Effort |
 |---|---|---|---|---|
-| **R1** | Concentrate next cycle's due diligence on **Adventure, Indie and Casual** | The three highest reception medians (86.2 / 86.7 / 88.2%) + price-band effect of 3.31-5.05 p.p. + sufficient target volume | High | Low |
+| **R1** | Concentrate next cycle's due diligence on **Adventure, Indie and Casual** | The three highest reception medians (86.2 / 86.7 / 88.2%) + price-band effect of 3.31-5.04 p.p. + sufficient target volume | High | Low |
 | **R2** | Add the **catalogue's position in the price quartiles** to screening; flag studios with >50% in Q1 for review | Q1 is the worst band across all 10 genres; the pattern survives the age control | Medium | Low |
 | **R3** | **Deprioritise Massively Multiplayer** this cycle; Sports and Racing as "insufficient evidence" | MMO: 76.4% median, non-monotonic pattern, n=176. Sports (329) and Racing (338) below the n<350 threshold | Medium | Low |
 

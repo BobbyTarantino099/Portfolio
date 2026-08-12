@@ -47,6 +47,19 @@ Si las tres no se alinean, el gráfico se rehace.
 | Concentración geográfica | Mapa coroplético, con la normalización correcta |
 | Flujo entre estados | Sankey, embudo |
 
+## 4b. La identidad la aplica el código, no la memoria
+
+Los principios de la sección siguiente están **implementados** en `assets/estilo.py`. Cópialo a
+`notebooks/` del caso y llama a `aplicar()` y `figura(...)`: la cabecera de tres niveles, la nota
+de fuente y la firma salen ya compuestas y consistentes entre figuras.
+
+Lee la sección 5 para saber *por qué* cada regla existe —la necesitarás cuando tengas que salirte
+de ella—, pero no la apliques a mano figura por figura. Eso es exactamente lo que produce
+portafolios donde cada gráfico parece de un autor distinto.
+
+Antes de elegir la forma, revisa el **catálogo de la sección 7 del anexo**. La primera forma que
+se te ocurre suele ser barras agrupadas, y suele haber una mejor.
+
 ## 5. Principios de diseño
 
 - **Contraste dirigido:** un color destacado para el dato protagonista, gris para el contexto. Si
