@@ -30,6 +30,9 @@ Si reconoces alguna, hay trabajo pendiente:
 - No se puede decir en una frase qué decisión cambia el análisis.
 - La sección de limpieza dice "se limpiaron los datos" sin más.
 - Todos los gráficos son del mismo tipo, o son los que la herramienta ofrece por defecto.
+- Secciones enteras en prosa corrida donde había una enumeración: un párrafo que anuncia «tres
+  decisiones» y luego las encadena con comas obliga a leerlo dos veces para extraer una lista que
+  el autor ya tenía en la cabeza.
 - Las recomendaciones servirían igual para otra empresa de otro sector.
 - No hay ninguna limitación declarada.
 - Hay más código que narrativa.
@@ -62,3 +65,7 @@ Respóndelas por escrito antes de publicar.
 - [ ] Ortografía y cifras revisadas — un error tipográfico en un número destruye la credibilidad de
       todos los demás.
 - [ ] Párrafo de introducción escrito para el índice del portafolio.
+- [ ] **Formato del texto revisado en la página publicada y en el `README`**: las enumeraciones son
+      listas, los datos de dos dimensiones son tablas, y no queda ningún párrafo de más de ~70
+      palabras que no sea deliberadamente argumental. La regla y sus señales están en la
+      plantilla 7 de `plantillas.md`.

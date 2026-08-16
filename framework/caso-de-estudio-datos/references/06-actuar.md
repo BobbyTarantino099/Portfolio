@@ -59,6 +59,10 @@ Consideraciones prácticas:
 
 - No publiques datos sensibles ni con licencia restrictiva. Enlaza la fuente en su lugar.
 - Los gráficos deben verse en el propio README, sin descargar nada.
+- **El formato del texto sigue la misma regla que la página del sitio**, y está en la plantilla 7
+  de `plantillas.md`: una enumeración se escribe como lista, un dato de dos dimensiones como tabla,
+  y un argumento encadenado se queda en prosa. Aplica igual aquí, porque el README es la puerta de
+  entrada del revisor técnico y llega a él por GitHub, no por el sitio.
 - Escribe un párrafo de introducción para el índice del portafolio: qué caso es, qué hiciste, qué
   descubriste. Es lo único que muchos leerán.
 - Practica la presentación en voz alta. Una presentación completa ronda los 30 minutos; la versión
