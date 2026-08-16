@@ -187,6 +187,30 @@ instrucciones, no contenido.
 El orden de las secciones es fijo. No es rigidez decorativa: es lo que hace que abrir el caso 5
 se sienta igual que abrir el caso 1, y lo que permite meter un caso nuevo sin tocar el sitio.
 
+### Formato del cuerpo: que la forma del texto siga a la forma de las ideas
+
+Una enumeración se escribe como lista; un argumento encadenado se escribe como prosa. Las dos
+cosas mal puestas cuestan lectores: un muro de párrafos obliga a buscar los puntos clave, y un
+caso hecho solo de viñetas pierde los conectores que explican *por qué* una cosa lleva a la otra
+— y ese razonamiento es lo que un caso de estudio vende.
+
+**Señales de que un párrafo pide ser lista:**
+
+- Anuncia un número y luego encadena: «tres decisiones…», «cuatro límites…».
+- Separa elementos con punto y coma, o abre con «también:».
+- Enumera en paralelo y obliga a emparejar por posición — «Adventure, Indie y Casual… (4.030,
+  5.561 y 2.230 juegos)… (86,2 %, 86,7 % y 88,2 %)». Eso es una **tabla**, no una frase.
+
+**Señales de que debe quedarse en prosa:** argumenta, concede («una lectura anterior decía…»),
+compara o explica una causa. Partirlo en dos párrafos le da aire sin romper el hilo.
+
+**Recursos disponibles** — todos ya estilizados por el sitio, no hace falta CSS nuevo: listas con
+y sin numerar, **negrita selectiva** para abrir cada punto, `>` cita con borde de acento para un
+apunte que se sale del hilo, y tablas para cualquier dato de dos o más dimensiones.
+
+Regla práctica: **ningún párrafo de más de ~70 palabras** salvo que sea deliberadamente
+argumental. Si hay más de dos por caso, casi siempre hay enumeraciones escondidas dentro.
+
 ````markdown
 ---
 title: "[The finding, not the topic. One sentence a recruiter can repeat out loud.]"

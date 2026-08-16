@@ -89,20 +89,29 @@ There is not a single genre where the cheapest band gets the best reception.
 
 ![Heatmap of median positive-review share by genre and price band, with darker cells at Q3 and Q4 across most genres.](./images/02-genre-price-heatmap.png)
 
-In Action, Indie, Simulation, Casual and Strategy the best band is Q3 ($6.46-$12.36); in
-Adventure, Racing, Sports and RPG it's Q4 (>$12.36). No genre has its best reception in Q1 or Q2.
-This rules out the simplistic "more expensive is always better" reading: in half the genres, the
-most expensive band already trails Q3.
+Where each genre peaks:
+
+- **Q3 ($6.46–$12.36)** — Action, Indie, Simulation, Casual and Strategy.
+- **Q4 (>$12.36)** — Adventure, Racing, Sports and RPG.
+
+No genre has its best reception in Q1 or Q2. That rules out the simplistic "more expensive is
+always better" reading too: in half the genres, the most expensive band already trails Q3.
 
 ### 3. The effect is real but moderate: 2.50 to 5.04 percentage points
 
 ![Ranking of the price effect by genre, with Adventure, Indie and Casual highlighted as the strongest combined candidates.](./images/03-effect-ranking.png)
 
-The gap between Q1 and each genre's best band ranges from 2.50 p.p. (RPG) to 5.04 p.p.
-(Adventure). Quantifying it matters: it supports a directional screening argument, not a claim
-that price alone transforms a product's reception. Adventure, Indie and Casual are the three that
-combine the best effect, volume (4,030, 5,561 and 2,230 games) and absolute reception (medians of
-86.2%, 86.7% and 88.2%).
+The gap between Q1 and each genre's best band ranges from 2.50 p.p. (RPG) to 5.04 p.p. (Adventure).
+Quantifying it matters: it supports a directional screening argument, not a claim that price alone
+transforms a product's reception.
+
+Three genres combine the best effect, volume and absolute reception:
+
+| Genre | Games | Median reception |
+|---|---|---|
+| Adventure | 4,030 | 86.2% |
+| Indie | 5,561 | 86.7% |
+| Casual | 2,230 | 88.2% |
 
 ### 4. Not an age effect: the pattern holds for both new and old games
 

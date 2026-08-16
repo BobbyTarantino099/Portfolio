@@ -16,10 +16,13 @@ demonstrates: "Writing the hypothesis down before the analysis and publishing th
 ## Context
 
 A multi-club investment fund has to decide where its next tranche of capital goes: into a club that
-develops and sells players, or into an elite one that buys them. The answer turns on two beliefs
-the industry treats as settled — that transfer spending is concentrating in fewer hands, and that
-young players now command a growing premium. Between them they decide whether "develop and sell"
-still carries a margin.
+develops and sells players, or into an elite one that buys them.
+
+The answer turns on two beliefs the industry treats as settled, and between them they decide
+whether "develop and sell" still carries a margin:
+
+- transfer spending is **concentrating in fewer hands**;
+- young players now command a **growing premium**.
 
 The analytical question: **across the European transfer market, and over the four windows from
 2022/23 to 2025/26, is spending concentrating on fewer buying clubs, and is a larger share of it
@@ -40,26 +43,34 @@ Two sources doing two different jobs, **never joined at record level**.
 | FIFA Global Transfer Report (FIFA TMS) | The decade series and the age axis | 2016–2025 market · 2018–2025 by age | FIFA publication; figures transcribed with citation, PDFs not redistributed |
 | `dcaribou/transfermarkt-datasets` | Deal-level detail: clubs, players, fees | 22/23–25/26 | CC0-1.0 |
 
-FIFA's report is the official **census** of international transfers — every one has to pass through
-the system that produces it — so it carries no survivorship bias but never names a club.
-Transfermarkt names every club and player, which is what makes a buyer/seller gap computable at
-all, but it is a scrape and its coverage is uneven.
+Each one covers the other's blind spot:
+
+- **FIFA is a census.** Every international transfer has to pass through the system that produces
+  it, so it carries no survivorship bias — but it never names a club.
+- **Transfermarkt names everyone.** That is what makes a buyer/seller gap computable at all — but
+  it is a scrape, and its coverage is uneven.
 
 **The limitation that shaped the whole design.** Transfermarkt rebuilds each player's history from
-the players present in its base *today*. Coverage therefore thins going backwards — and it thins
-**differentially by age**: the mean age of priced deals drifts from 20.8 to 24.4 and the share
-aged 18–21 falls from 53.8% to 21.2% between 2010/11 and 2025/26. None of that is football; it is
-who survives in the database. Taken at face value, this source answers the *opposite* of the
-hypothesis for reasons unrelated to the sport.
+the players present in its base *today*. Coverage therefore thins going backwards — and, worse, it
+thins **differentially by age**. Between 2010/11 and 2025/26:
+
+- the mean age of priced deals drifts from **20.8 to 24.4**;
+- the share of deals aged 18–21 falls from **53.8% to 21.2%**.
+
+None of that is football; it is who survives in the database. Taken at face value, this source
+answers the *opposite* of the hypothesis, for reasons that have nothing to do with the sport.
 
 The series stabilises from 22/23 onwards, so deal-level analysis uses only those four seasons, and
 every claim about a decade comes from the census instead.
 
-Also declared, because they bound what can be said: no claim is made about the level or direction
-of youth spending share — the two sources disagree and the gap doubles in 2025 without an
-explanation I can defend. Under-18s are not analysable at 2–7 priced deals a season. Nothing here
-is causal. And net transfer income is not profit: without club accounts, "sells well" is not the
-same as "makes money".
+Four more limits, declared because they bound what can be said:
+
+- **No claim about the youth spending share**, in level or direction. The two sources disagree, and
+  the gap doubles in 2025 without an explanation I can defend.
+- **Under-18s are not analysable** at 2–7 priced deals a season.
+- **Nothing here is causal.** The case describes how the market is structured, not what moves it.
+- **Net transfer income is not profit.** Without club accounts, "sells well" is not the same as
+  "makes money".
 
 ## Process
 
@@ -68,18 +79,21 @@ that needs no server and no cloud account. The queries live as real `.sql` files
 Python strings, so they can be read and judged on their own; Python only orchestrates them and
 draws the figures.
 
-Nothing in the raw data needed correcting — no duplicates, no impossible ages, no club transferring
-to itself, no club under two identifiers. Every transformation is a *selection*, not a repair, and
-the checks that came back empty are recorded anyway: an unrecorded check is indistinguishable from
-a check never run.
+**Nothing in the raw data needed correcting.** No duplicates, no impossible ages, no club
+transferring to itself, no club under two identifiers. Every transformation is a *selection*, not a
+repair — and the checks that came back empty are recorded anyway, because an unrecorded check is
+indistinguishable from a check never run.
 
-Three decisions did have to be made. Only rows with a fee above zero carry price information,
-because upstream the parser collapses loans, free transfers and unrecorded fees to zero or null
-without distinction. Club coverage is partial and **not at random**, so the analysis runs on two
-declared universes — one for price and age metrics that keeps the cheap purchases of young talent
-from outside the covered leagues, another for club-level metrics where both parties must be known.
-And DuckDB compares strings case-sensitively, which would have silently emptied the European filter
-had it gone unchecked.
+Three decisions did have to be made:
+
+1. **Only rows with a fee above zero carry price information.** Upstream, the parser collapses
+   loans, free transfers and unrecorded fees to zero or null without distinction, so a zero cannot
+   be read as "moved for free".
+2. **Club coverage is partial and not at random**, so the analysis runs on two declared universes:
+   one for price and age metrics, which keeps the cheap purchases of young talent from outside the
+   covered leagues; another for club-level metrics, where both parties have to be known.
+3. **DuckDB compares strings case-sensitively.** Unchecked, that would have silently emptied the
+   European filter — no error, no warning, just an empty result that looks like an answer.
 
 The pipeline reconciles its own row counts and fails loudly if the result stops matching what the
 previous phase closed with. A pipeline that finishes without complaining is not the same as a
@@ -109,9 +123,11 @@ the roles persist rather than rotating each summer.
 
 ![Diverging bar chart of clubs above or below what chance would produce, by number of seasons as a net seller. The extremes are over-represented by 15 and 35 clubs; the middle categories under-represented by 34 and 28.](./images/03-selling-is-structural.png)
 
-The measure names them. Ajax banked €267m net across the four seasons, Salzburg €234m, Lille €185m.
-Chelsea (−€800m), Manchester United (−€672m) and Arsenal (−€637m) never once finished a season as
-net sellers.
+The measure names them:
+
+- **Always selling** — Ajax banked €267m net across the four seasons, Salzburg €234m, Lille €185m.
+- **Never selling** — Chelsea (−€800m), Manchester United (−€672m) and Arsenal (−€637m) did not
+  finish a single season as net sellers.
 
 ### Youth carries no premium
 
@@ -121,10 +137,12 @@ source over the period measured.
 ![Slope chart comparing 2022 and 2025 for both sources, against a parity line at 1.0. Transfermarkt sits just above parity at 1.07 in both years; the FIFA census sits below it, moving from 0.97 to 0.91.](./images/04-no-youth-premium.png)
 
 The levels differ because the universes do — FIFA counts only international transfers, this dataset
-also counts domestic ones — but neither series rises. An earlier reading of mine said the ratio was
-*falling*; it appeared only when cutting the data by season and hung on a single starting
-observation, so it did not survive checking against other specifications and was withdrawn. What
-the evidence carries is parity and no escalation, and that is what is published.
+also counts domestic ones — but neither series rises.
+
+An earlier reading of mine said the ratio was *falling*. It appeared only when cutting the data by
+season, and hung on a single starting observation, so it did not survive checking against other
+specifications and was withdrawn. What the evidence carries is parity and no escalation, and that
+is what is published.
 
 ### But the young market runs at two speeds
 
@@ -139,24 +157,26 @@ long, cheap tail, and it is the tail that moves the aggregate.
 
 ## Recommendations
 
-**Put the next tranche into a persistent net seller in a mid-tier league, not an elite club.** The
-scarce asset is not money to spend — that side of the market gains participants every year — but a
-reliable supply of sellable players. Measured by the invested club's net transfer balance over
-three seasons. The risk is explicit: net transfer income is not profit, and without club accounts a
-good seller can still be a bad business.
+Three actions, ranked by impact against effort:
 
-**Cap purchase prices against the market band for the role, and write into the mandate that age
-carries no premium.** A policy line rather than a project, and the cheapest of the three to adopt.
-It needs a documented-exception route, or it will be ignored the first time a sporting director
-wants a particular player.
+1. **Put the next tranche into a persistent net seller in a mid-tier league, not an elite club.**
+   The scarce asset is not money to spend — that side of the market gains participants every year —
+   but a reliable supply of sellable players.
+   *Measured by* the invested club's net transfer balance over three seasons.
+   *Risk:* net transfer income is not profit, and without club accounts a good seller can still be
+   a bad business.
+2. **Cap purchase prices against the market band for the role, and write into the mandate that age
+   carries no premium.** A policy line rather than a project, and the cheapest of the three to
+   adopt.
+   *Risk:* it needs a documented-exception route, or it will be ignored the first time a sporting
+   director wants a particular player.
+3. **Make each club pick its lane in the young-player market** — cheap volume or elite few — and
+   size its scouting for that one. A club drifting between the two competes badly in both.
 
-**Make each club pick its lane in the young-player market** — cheap volume or elite few — and size
-its scouting for that one. A club drifting between the two competes badly in both.
-
-Deliberately *not* a recommendation: Saudi clubs went from €9m to €565m in four seasons, which may
-be opening an exit for players over 28. It is a real finding, but four seasons cannot separate a
-structural change from a spending cycle, and recommending a strategy on that basis is exactly what
-this case spent six phases refusing to do.
+> **Deliberately not a recommendation.** Saudi clubs went from €9m to €565m in four seasons, which
+> may be opening an exit for players over 28. It is a real finding, but four seasons cannot
+> separate a structural change from a spending cycle — and recommending a strategy on that basis is
+> exactly what this case spent six phases refusing to do.
 
 ## Reproduce
 
