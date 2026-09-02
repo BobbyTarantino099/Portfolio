@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import ArticleRail from '../../components/ArticleRail.astro';
+import VintageExplorer from '../../components/VintageExplorer.astro';
 
 export async function getStaticPaths() {
   const cases = await getCollection('cases');
@@ -64,6 +65,20 @@ const meta = [
       <div class="case-body">
         <Content />
       </div>
+
+      {
+        /* El explorador va DESPUÉS del cuerpo, como sección propia, y no dentro del Markdown.
+           El contrato fija el orden de las siete secciones del cuerpo, y un componente incrustado
+           a media narrativa obligaría a pelearse con ese orden en cada caso que traiga uno.
+           Además, un Markdown no puede embeber un componente sin MDX, que el sitio no usa. */
+        d.explorer && (
+          <VintageExplorer
+            src={d.explorer}
+            title="Explore the vintages yourself"
+            caption="Every vintage from 1991 to 2025, drawn together. Each line stops where its vintage stops being readable — which is why the recent ones are so short. That truncation is the whole problem: a vintage that has not lived long enough cannot be compared with one that has."
+          />
+        )
+      }
 
       {
         /* `demonstrates` NO se renderiza aquí: el cuerpo del Markdown ya trae la

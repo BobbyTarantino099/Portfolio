@@ -1,0 +1,417 @@
+---
+/**
+ * Explorador de curvas de maduración por añada.
+ *
+ * Es el PRIMER JavaScript de cliente del sitio. Hasta ahora no había una sola etiqueta
+ * `<script>` en `src/`, y esa sobriedad es un activo: sin dependencias, sin framework, sin
+ * librería de gráficos. El SVG se dibuja a mano, que para 35 polilíneas es menos código que
+ * configurar cualquier librería.
+ *
+ * Qué enseña, y por qué esta interacción y no otra: las 35 añadas se pintan a la vez en gris
+ * tenue, y las recientes se cortan visiblemente antes que las viejas porque no han vivido lo
+ * suficiente. La censura por la derecha —el mecanismo entero del caso— se ve de un vistazo en
+ * lugar de explicarse en un párrafo. El lector elige el corte y destaca una añada.
+ *
+ * Sin JavaScript no se pierde el argumento: las cuatro figuras estáticas de la página ya lo
+ * sostienen. Esto es una mejora, no el vehículo.
+ */
+interface Props {
+  src: string;
+  title: string;
+  caption: string;
+}
+
+const { src, title, caption } = Astro.props;
+---
+
+<section class="explorer" aria-labelledby="explorer-title" data-src={src}>
+  <h2 id="explorer-title">{title}</h2>
+  <p class="explorer-lede">{caption}</p>
+
+  <div class="explorer-controls">
+    <fieldset>
+      <legend>Cut</legend>
+      <div class="cut-buttons" role="group" aria-label="Choose how to slice the portfolio"></div>
+    </fieldset>
+
+    <label class="vintage-picker">
+      <span>Highlight vintage</span>
+      <select aria-describedby="explorer-readout"></select>
+    </label>
+  </div>
+
+  <figure class="explorer-figure">
+    <svg viewBox="0 0 720 380" role="img" aria-describedby="explorer-readout"></svg>
+    <figcaption id="explorer-readout" aria-live="polite"></figcaption>
+  </figure>
+
+  <noscript>
+    <p class="explorer-fallback">
+      This explorer needs JavaScript. The four charts above carry the same argument without it.
+    </p>
+  </noscript>
+</section>
+
+<script>
+  // ---------------------------------------------------------------------------
+  // Geometría. Coordenadas del viewBox, no píxeles: el SVG escala con el ancho.
+  // ---------------------------------------------------------------------------
+  const W = 720, H = 380;
+  const M = { top: 14, right: 16, bottom: 50, left: 44 };
+  const PLOT = { w: W - M.left - M.right, h: H - M.top - M.bottom };
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (name: string, attrs: Record<string, string | number>) => {
+    const node = document.createElementNS(NS, name);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, String(v));
+    return node;
+  };
+
+  type Datos = {
+    ages: number[];
+    scale: number;
+    unit: string;
+    cuts: { key: string; label: string }[];
+    series: Record<string, Record<string, Record<string, (number | null)[]>>>;
+  };
+
+  const raiz = document.querySelector<HTMLElement>('.explorer');
+  if (raiz) iniciar(raiz);
+
+  async function iniciar(raiz: HTMLElement) {
+    const src = raiz.dataset.src;
+    if (!src) return;
+
+    let datos: Datos;
+    try {
+      const res = await fetch(src);
+      if (!res.ok) throw new Error(String(res.status));
+      datos = await res.json();
+    } catch {
+      // Un explorador que no carga no debe dejar un hueco mudo en mitad de la página.
+      raiz.querySelector('figcaption')!.textContent =
+        'The vintage data could not be loaded. The charts above carry the same argument.';
+      return;
+    }
+
+    const svg = raiz.querySelector('svg')!;
+    const lectura = raiz.querySelector('figcaption')!;
+    const botones = raiz.querySelector('.cut-buttons')!;
+    const selector = raiz.querySelector('select')!;
+
+    // El eje Y se fija UNA vez, con el máximo de todo el archivo, y no se reescala al cambiar
+    // de corte. Un eje que se mueve hace que dos cortes parezcan iguales cuando no lo son.
+    let maximo = 0;
+    for (const niveles of Object.values(datos.series))
+      for (const cohortes of Object.values(niveles))
+        for (const serie of Object.values(cohortes))
+          for (const v of serie) if (v !== null && v > maximo) maximo = v;
+    const techo = Math.ceil(maximo / datos.scale / 5) * 5;
+
+    const edadMax = datos.ages[datos.ages.length - 1];
+    const x = (meses: number) => M.left + (meses / edadMax) * PLOT.w;
+    const y = (pct: number) => M.top + PLOT.h - (pct / techo) * PLOT.h;
+
+    const cohortes = Object.keys(datos.series.all['All loans']).sort();
+    let corte = datos.cuts[0].key;
+    let nivel = Object.keys(datos.series[corte])[0];
+    let destacada = '2023';
+
+    datos.cuts.forEach((c, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = c.label;
+      b.dataset.cut = c.key;
+      b.setAttribute('aria-pressed', String(i === 0));
+      b.addEventListener('click', () => {
+        corte = c.key;
+        nivel = Object.keys(datos.series[corte])[0];
+        botones.querySelectorAll('button').forEach((otro) =>
+          otro.setAttribute('aria-pressed', String(otro === b)),
+        );
+        dibujar();
+      });
+      botones.appendChild(b);
+    });
+
+    for (const c of cohortes) {
+      const o = document.createElement('option');
+      o.value = c;
+      o.textContent = c;
+      o.selected = c === destacada;
+      selector.appendChild(o);
+    }
+    selector.addEventListener('change', () => {
+      destacada = selector.value;
+      dibujar();
+    });
+
+    function trazar(serie: (number | null)[]) {
+      // Se corta en el primer hueco en lugar de saltarlo: un hueco significa que la añada deja
+      // de ser legible a esa edad, y unir los puntos por encima dibujaría un dato que no existe.
+      const puntos: string[] = [];
+      for (let i = 0; i < serie.length; i++) {
+        const v = serie[i];
+        if (v === null) break;
+        puntos.push(`${x(datos.ages[i]).toFixed(1)},${y(v / datos.scale).toFixed(1)}`);
+      }
+      return puntos;
+    }
+
+    function dibujar() {
+      svg.textContent = '';
+
+      const niveles = Object.keys(datos.series[corte]);
+      if (!niveles.includes(nivel)) nivel = niveles[0];
+
+      // Rejilla y eje Y
+      for (let v = 0; v <= techo; v += 5) {
+        svg.appendChild(el('line', { x1: M.left, x2: W - M.right, y1: y(v), y2: y(v), class: 'grid' }));
+        svg.appendChild(el('text', { x: M.left - 8, y: y(v) + 4, class: 'tick tick-y' })).textContent =
+          `${v}%`;
+      }
+      // Eje X
+      for (const meses of [0, 24, 48, 72, 96, 120]) {
+        svg.appendChild(el('text', { x: x(meses), y: H - 28, class: 'tick tick-x' })).textContent =
+          String(meses);
+      }
+      // El rotulo del eje va CENTRADO y en su propia linea, debajo de los ticks. Alineado a la
+      // derecha se montaba encima del tick de 120, que es justo el numero que hay que poder leer.
+      svg.appendChild(el('text', { x: M.left + PLOT.w / 2, y: H - 6, class: 'axis-label' })).textContent =
+        'months since approval';
+
+      const datosNivel = datos.series[corte][nivel];
+
+      for (const c of cohortes) {
+        const serie = datosNivel[c];
+        if (!serie) continue;
+        const puntos = trazar(serie);
+        if (puntos.length < 2) continue;
+        svg.appendChild(
+          el('polyline', {
+            points: puntos.join(' '),
+            class: c === destacada ? 'curva curva-destacada' : 'curva',
+          }),
+        );
+      }
+
+      // La destacada se redibuja al final para que quede por encima de las 34 restantes.
+      const serie = datosNivel[destacada];
+      const puntos = serie ? trazar(serie) : [];
+      if (puntos.length >= 2) {
+        svg.appendChild(el('polyline', { points: puntos.join(' '), class: 'curva curva-destacada' }));
+        const [ux, uy] = puntos[puntos.length - 1].split(',').map(Number);
+        svg.appendChild(el('circle', { cx: ux, cy: uy, r: 4, class: 'punta' }));
+      }
+
+      const ultima = puntos.length ? (datos.ages[puntos.length - 1] as number) : 0;
+      const valor = puntos.length
+        ? (datosNivel[destacada][puntos.length - 1] as number) / datos.scale
+        : null;
+      const etiquetaNivel = corte === 'all' ? 'all loans' : `${nivel.toLowerCase()}`;
+
+      lectura.textContent =
+        valor === null
+          ? `The ${destacada} vintage has no readable data for ${etiquetaNivel}.`
+          : `${destacada} vintage, ${etiquetaNivel}: ${valor.toFixed(2)}% charged off by month ` +
+            `${ultima} — the furthest age every loan in that vintage has reached. ` +
+            `Each line stops where its vintage stops being readable.`;
+
+      // Selector de nivel dentro del corte, si el corte tiene más de uno.
+      const previo = raiz.querySelector('.level-buttons');
+      if (previo) previo.remove();
+      if (niveles.length > 1) {
+        const caja = document.createElement('div');
+        caja.className = 'level-buttons';
+        caja.setAttribute('role', 'group');
+        caja.setAttribute('aria-label', 'Choose a band within the cut');
+        for (const n of niveles) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = n;
+          b.setAttribute('aria-pressed', String(n === nivel));
+          b.addEventListener('click', () => {
+            nivel = n;
+            dibujar();
+          });
+          caja.appendChild(b);
+        }
+        raiz.querySelector('.explorer-controls')!.after(caja);
+      }
+    }
+
+    dibujar();
+  }
+</script>
+
+<style>
+  .explorer {
+    margin: 4rem 0 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .explorer h2 {
+    margin: 0 0 0.5rem;
+  }
+
+  .explorer-lede {
+    max-width: var(--measure);
+    color: var(--ink-soft);
+    margin: 0 0 1.5rem;
+  }
+
+  .explorer-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 2rem;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+  }
+
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  legend,
+  .vintage-picker span {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.5rem;
+    padding: 0;
+  }
+
+  .cut-buttons,
+  .level-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .level-buttons {
+    margin-bottom: 1rem;
+  }
+
+  /* :global() y no `button` a secas. Astro aplica los estilos con ambito anadiendo un atributo
+     a los elementos DEL TEMPLATE, y estos botones los crea el JavaScript en tiempo de ejecucion,
+     asi que nunca lo reciben: sin esto salian con el aspecto por defecto del navegador, que en
+     modo oscuro es una pastilla clara sobre fondo negro. El `<select>` si esta en el template y
+     por eso si se veia bien — que es lo que hizo el fallo visible solo a medias. */
+  .explorer :global(button) {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.8rem;
+    color: var(--ink-soft);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .explorer :global(button:hover) {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  .explorer :global(button[aria-pressed='true']) {
+    color: var(--paper);
+    background: var(--serie);
+    border-color: var(--serie);
+  }
+
+  select {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 0.35rem 0.6rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+
+  .explorer-figure {
+    margin: 0;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* El acento del caso, no el del sitio: las cuatro figuras de esta página son carmesí y el
+     explorador es la quinta. El escalón oscuro está validado con el verificador de la skill
+     `dataviz` sobre el papel oscuro real (#131310), no aclarado a ojo. */
+  .explorer {
+    --serie: #a8203a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .explorer {
+      --serie: #d9697f;
+    }
+  }
+
+  svg :global(.curva) {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+  }
+
+  svg :global(.curva-destacada) {
+    stroke: var(--serie);
+    stroke-width: 2.4;
+  }
+
+  svg :global(.punta) {
+    fill: var(--serie);
+  }
+
+  svg :global(.grid) {
+    stroke: var(--rule);
+    stroke-width: 0.7;
+    opacity: 0.55;
+  }
+
+  svg :global(.tick) {
+    font-size: 11px;
+    fill: var(--ink-soft);
+  }
+
+  svg :global(.tick-y) {
+    text-anchor: end;
+  }
+
+  svg :global(.tick-x) {
+    text-anchor: middle;
+  }
+
+  svg :global(.axis-label) {
+    font-size: 11px;
+    fill: var(--ink-soft);
+    text-anchor: middle;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.75rem;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  .explorer-fallback {
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 40rem) {
+    .explorer-controls {
+      gap: 1rem;
+    }
+  }
+</style>

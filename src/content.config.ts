@@ -71,6 +71,22 @@ const cases = defineCollection({
       /** true -> aparece en la home. */
       featured: z.boolean().default(false),
 
+      /**
+       * Ruta publica al JSON de series de un explorador interactivo, si el caso trae uno.
+       *
+       * OPCIONAL a proposito, y esa es la parte que importa: los dos casos publicados antes de
+       * que esto existiera no lo declaran, y tienen que seguir construyendo. Un campo nuevo
+       * obligatorio habria roto el sitio entero para dar de alta una funcion que usa un caso.
+       *
+       * El JSON vive en `public/`, no en la carpeta del caso, porque el componente lo pide en
+       * tiempo de ejecucion. Importarlo y embeberlo en el HTML meteria decenas de KB en cada
+       * carga de la pagina aunque el lector no toque el explorador.
+       *
+       * Solo transporta AGREGADOS, como el resto del traspaso: si el archivo empieza a pesar
+       * megas, la agregacion esta incompleta y se vuelve a la fase 4 del framework.
+       */
+      explorer: z.string().startsWith('/').optional(),
+
       /** Que demuestra este caso que los demas no. Alimenta la matriz de cobertura. */
       demonstrates: z.string().min(1),
     }),

@@ -474,12 +474,23 @@ problemType:  # taxonomía de la fase 1 (enum: 6 valores)
 scale:        # "125,855 games · 2 sources"
 repo:         # URL de la evidencia — OPCIONAL a propósito
 featured:     # true -> aparece en la home
+explorer:     # ruta pública al JSON de un explorador — OPCIONAL a propósito
 demonstrates: # qué demuestra frente a los demás casos
 ---</code></pre>
 
 <p>Y el orden de secciones es fijo: <em>Context → Data → Process → Findings → Recommendations →
 Reproduce → What this demonstrates</em>. No es rigidez decorativa; es lo que hace que abrir el
 caso 5 se sienta igual que abrir el caso 1.</p>
+
+<div class="callout">
+  <p><strong>Por qué hay dos campos opcionales, y qué los hace distintos.</strong>
+  <code>repo</code> lo es porque encadenar la publicación de una página a que su repositorio ya
+  sea público ata dos etapas que no dependen la una de la otra. <code>explorer</code> lo es por
+  una razón distinta y más dura: se añadió cuando ya había dos casos publicados, y un campo nuevo
+  obligatorio habría roto el sitio entero para dar de alta una función que usa <em>un</em> caso.
+  Un contrato que crece solo puede crecer por campos opcionales; si un campo nuevo tiene que ser
+  obligatorio, hay que rellenarlo en todos los casos existentes antes de declararlo.</p>
+</div>
 
 <div class="callout">
   <p><strong>Por qué <code>repo</code> es opcional.</strong> Si fuera obligatorio, no se podría
