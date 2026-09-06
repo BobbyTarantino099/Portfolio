@@ -9,8 +9,13 @@ export const site = {
   /** Nombre completo, como quieres que te lean los reclutadores. */
   name: 'Juan Esteban Arenas',
 
-  /** Iniciales del monograma de la cabecera. */
-  initials: 'JEA',
+  /**
+   * La letra del monograma. Una sola, a propósito: la caja es sólida y lo que se
+   * reconoce de lejos es la forma, no las iniciales completas. `JEA` a 0.82rem
+   * dentro del cuadro no se leía a tamaño de favicon, que es donde una marca
+   * tiene que funcionar. Las figuras firman `JA` — ver estilo.py del framework.
+   */
+  initials: 'J',
 
   /** El rol, en una línea. Acompaña al nombre en cabecera y pie. */
   role: 'Data analyst',

@@ -17,31 +17,36 @@ const { size = 'md' } = Astro.props;
 <span class:list={['monogram', size]} aria-hidden="true">{site.initials}</span>
 
 <style>
+  /* Caja sólida y letra en negativo, no un contorno con tres letras dentro.
+     Antes cabían `JEA` a 0.82rem: la caja era un contenedor de letritas y a
+     tamaño de favicon no se leía ninguna. Con una sola letra en 1.4rem la caja
+     enmarca una forma, que es lo que se reconoce de lejos. El bloque de tinta
+     invierte con el tema por sí solo — `--ink` sobre `--paper` en claro, al
+     revés en oscuro — sin una regla por tema. */
   .monogram {
     display: inline-grid;
     place-items: center;
     font-family: var(--font-serif);
     font-optical-sizing: auto;
     font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--ink);
-    border: 1.5px solid var(--ink);
+    color: var(--paper);
+    background: var(--ink);
     border-radius: var(--radius);
-    /* El texto se asienta ópticamente un pelo alto dentro de la caja. */
+    /* La J se asienta ópticamente un pelo alta dentro de la caja. */
     line-height: 1;
-    padding-top: 0.06em;
+    padding-top: 0.04em;
     flex: none;
   }
 
   .md {
     width: 2.35rem;
     height: 2.35rem;
-    font-size: 0.82rem;
+    font-size: 1.4rem;
   }
 
   .sm {
     width: 2rem;
     height: 2rem;
-    font-size: 0.7rem;
+    font-size: 1.18rem;
   }
 </style>

@@ -196,6 +196,11 @@ Toda figura lleva monograma. Ninguna sale sin marca, ni siquiera las de trabajo 
 convierte una captura reenviada en una figura atribuible. Se dibuja **con texto, no con imagen**,
 para no arrastrar un archivo por caso.
 
+La firma es **`JA`**, dos letras, y no coincide con la del sitio, que desde el 06/09/2026 es una `J`
+sola dentro de una caja sólida. No es un descuido: el logotipo tiene una caja que lo sostiene y una
+letra basta para reconocerlo, mientras que en la esquina de un gráfico no hay caja ninguna y una
+letra suelta se lee como una etiqueta de eje mal puesta.
+
 ### Lo que no se puede copiar de las referencias deportivas
 
 Las visualizaciones de Sportradar, Synergy o Sportico usan **logos, fotos y escudos como marcas**
