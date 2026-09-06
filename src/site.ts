@@ -34,8 +34,10 @@ export const site = {
     linkedin: 'https://www.linkedin.com/in/juan-a-702389312',
     /** Se genera con `python scripts/cv/build_cv.py`. */
     cv: '/cv.pdf',
-    /** Repositorio de este sitio, para el colofón del pie. */
-    source: 'https://github.com/BobbyTarantino099/Portfolio',
+    /* Aquí vivía `source`, el repositorio de este sitio, que enlazaba el colofón.
+       El colofón ya no lo ofrece, así que el campo se va con él: un enlace que
+       nadie pinta es una promesa que nadie comprueba. El repositorio sigue
+       existiendo y siendo público. */
   },
 } as const;
 

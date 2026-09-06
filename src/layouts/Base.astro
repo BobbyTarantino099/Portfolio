@@ -138,14 +138,15 @@ const year = new Date().getFullYear();
         </div>
       </div>
 
-      {/* Colofón. En un portafolio técnico, decir con qué está hecho el sitio y
-          enseñar el código se lee como criterio, no como relleno. */}
+      {/* Colofón. Antes decía con qué está hecho el sitio y enlazaba su código:
+          información sobre la herramienta, en el último renglón que lee alguien
+          que acaba de terminar un caso. Ese renglón rinde más apuntando a la
+          evidencia — los repositorios de los casos, que es lo que sostiene todo
+          lo demás. El repositorio del sitio sigue siendo público; simplemente ya
+          no se ofrece solo. */}
       <div class="shell colophon">
         <p>© {year} {site.name}</p>
-        <p>
-          Built with Astro, set in Fraunces and Inter, deployed on Cloudflare.{' '}
-          <a href={site.links.source}>Source</a>.
-        </p>
+        <p>Data, scripts and cleaning logs live in each case&rsquo;s repository.</p>
       </div>
     </footer>
   </body>
