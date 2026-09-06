@@ -17,7 +17,12 @@ interface Props {
   backLabel: string;
   title: string;
   headings?: MarkdownHeading[];
-  meta?: { label: string; value: string; href?: string }[];
+  /**
+   * `hint` es una segunda línea, en tono tenue, bajo el valor: lo que el lector
+   * necesita saber antes de pulsar, no después. Hoy lo usa el reporte técnico
+   * para declarar su tamaño — nadie abre 900 KB por sorpresa con datos móviles.
+   */
+  meta?: { label: string; value: string; href?: string; hint?: string }[];
 }
 
 const { backHref, backLabel, title, headings = [], meta = [] } = Astro.props;
@@ -37,7 +42,10 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         {meta.map((m) => (
           <div>
             <dt>{m.label}</dt>
-            <dd>{m.href ? <a href={m.href}>{m.value}</a> : m.value}</dd>
+            <dd>
+              {m.href ? <a href={m.href}>{m.value}</a> : m.value}
+              {m.hint && <span class="hint">{m.hint}</span>}
+            </dd>
           </div>
         ))}
       </dl>
@@ -137,6 +145,12 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
   .rail-meta dd {
     margin: 0;
     font-size: 0.8125rem;
+  }
+
+  .rail-meta .hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
   }
 
   /* En móvil los metadatos van en varias columnas: apilados ocupan media

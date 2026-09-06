@@ -9,6 +9,9 @@ domain: "Private credit / small-business lending"
 problemType: "predict"
 scale: "1,697,539 loans · 35 vintages · 1991–2026"
 repo: "https://github.com/BobbyTarantino099/sba-loan-vintages"
+report:
+  href: "/reports/sba-loan-vintages.pdf"
+  pages: 10
 featured: true
 explorer: "/data/sba-loan-vintages.json"
 demonstrates: "Knowing that a raw default rate is not comparable across cohorts of different ages, and correcting it — then refusing to publish a projection for the two vintages the method cannot support, which is the same error the case exists to expose. Underneath that: finding in EXEMPT, the field most analysts discard as unknown outcome, the censoring indicator the publisher hands over explicitly."

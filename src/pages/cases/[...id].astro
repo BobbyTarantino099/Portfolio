@@ -32,6 +32,16 @@ const meta = [
   { label: 'Scale', value: d.scale },
   { label: 'Published', value: dateLabel },
   ...(d.repo ? [{ label: 'Evidence', value: 'Repository', href: d.repo }] : []),
+  ...(d.report
+    ? [
+        {
+          label: 'Method',
+          value: 'Technical report',
+          href: d.report.href,
+          hint: `${d.report.pages} pp · PDF`,
+        },
+      ]
+    : []),
 ];
 ---
 

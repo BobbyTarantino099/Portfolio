@@ -9,6 +9,9 @@ domain: "Football / sports finance"
 problemType: "find patterns"
 scale: "6,716 priced transfers · €37.4bn · 2 sources"
 repo: "https://github.com/BobbyTarantino099/football-transfer-market"
+report:
+  href: "/reports/football-transfer-market.pdf"
+  pages: 11
 featured: true
 demonstrates: "Writing the hypothesis down before the analysis and publishing the result when the data contradicted it — on both axes. Underneath that: SQL on DuckDB over a scraped dataset whose history is rebuilt from surviving players, so its coverage thins backwards and by age, caught by reconciling it against FIFA's official census rather than trusting one source."
 ---

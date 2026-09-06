@@ -87,6 +87,26 @@ const cases = defineCollection({
        */
       explorer: z.string().startsWith('/').optional(),
 
+      /**
+       * Reporte tecnico del caso: 9-11 paginas sobre COMO se hizo, servidas desde
+       * `public/reports/`. Se copian desde el repositorio del caso con
+       * `scripts/reports/sync_reports.py`, que ademas imprime el numero de paginas.
+       *
+       * OPCIONAL, por el mismo motivo que `explorer`: un caso puede publicarse antes
+       * de tener su reporte, y un campo nuevo obligatorio habria roto el build de los
+       * tres casos a la vez.
+       *
+       * `pages` viaja en el contrato en lugar de calcularse al construir: es lo que el
+       * rail le promete al lector antes de que haga clic, y si alguien lo deja a medias
+       * quiero que falle aqui y no en la pagina.
+       */
+      report: z
+        .object({
+          href: z.string().startsWith('/'),
+          pages: z.number().int().positive(),
+        })
+        .optional(),
+
       /** Que demuestra este caso que los demas no. Alimenta la matriz de cobertura. */
       demonstrates: z.string().min(1),
     }),
