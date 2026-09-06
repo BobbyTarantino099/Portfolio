@@ -6,9 +6,17 @@ import Monogram from '../components/Monogram.astro';
 interface Props {
   title: string;
   description?: string;
+  /** Tarjeta de enlace. Las páginas de caso pasan la suya; el resto usa la general. */
+  ogImage?: string;
+  ogImageAlt?: string;
 }
 
-const { title, description = site.description } = Astro.props;
+const {
+  title,
+  description = site.description,
+  ogImage = '/og/default.png',
+  ogImageAlt = `${site.name} — ${site.role}`,
+} = Astro.props;
 
 const pageTitle = title === site.name ? title : `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -48,6 +56,17 @@ const year = new Date().getFullYear();
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+
+    {/* La imagen va en absoluto a la fuerza: LinkedIn descarta una ruta relativa
+        y la tarjeta sale sin imagen. La URL base sale de `site` en
+        astro.config.mjs, que ya apunta al dominio publicado. Las tarjetas se
+        generan con `python scripts/og/build_og.py`. */}
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <meta name="generator" content={Astro.generator} />
   </head>
 

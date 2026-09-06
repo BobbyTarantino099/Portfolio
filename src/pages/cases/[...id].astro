@@ -45,7 +45,12 @@ const meta = [
 ];
 ---
 
-<Base title={d.title} description={d.summary}>
+<Base
+  title={d.title}
+  description={d.summary}
+  ogImage={`/og/${entry.id}.png`}
+  ogImageAlt={d.title}
+>
   <div class="shell article-shell">
     <ArticleRail
       backHref="/"
