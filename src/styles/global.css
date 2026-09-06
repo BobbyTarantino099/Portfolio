@@ -301,6 +301,19 @@ pre {
   margin: var(--space-m) 0;
 }
 
+/* En un teléfono el scroll dentro del bloque existe pero nadie lo descubre: la
+   línea se corta a media palabra y parece un fallo de maquetación. Medido a
+   390 px, donde el bloque dispone de 340: un `grep` con varios patrones pedía
+   733 px y una ruta de sandbox 548. Por debajo de la tableta las líneas
+   envuelven en vez de esconderse, y `break-word` solo entra donde no hay
+   espacio donde cortar — que es justamente el caso de una ruta larga. */
+@media (max-width: 48rem) {
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+}
+
 pre code {
   background: none;
   padding: 0;

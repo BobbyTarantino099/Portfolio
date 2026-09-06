@@ -41,7 +41,9 @@ code.
 So the check went into my method, with the command that performs it:
 
 ```bash
-grep -rn "/home/\|/Users/\|C:\\\\\|/sessions/\|/mnt/" --include="*.py" --include="*.md" .
+grep -rn \
+  "/home/\|/Users/\|C:\\\\\|/sessions/\|/mnt/" \
+  --include="*.py" --include="*.md" .
 ```
 
 A gate you never run is a gate you do not have.
