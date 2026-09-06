@@ -1,9 +1,9 @@
 /**
  * Datos del sitio, en un solo sitio.
  *
- * TODO(juanes): faltan los enlaces. Están deliberadamente vacíos en vez de
- * inventados — un portafolio con enlaces rotos publicados es peor que uno sin
- * publicar. Nada aquí debería seguir como "TODO" el día que lo enseñes.
+ * Los enlaces que no existan se dejan vacíos, no inventados: cada consumidor los
+ * pinta condicionalmente, así que un campo vacío desaparece de la interfaz en vez
+ * de publicar un enlace roto.
  */
 export const site = {
   /** Nombre completo, como quieres que te lean los reclutadores. */
@@ -27,7 +27,8 @@ export const site = {
   links: {
     github: 'https://github.com/BobbyTarantino099',
     linkedin: 'https://www.linkedin.com/in/juan-a-702389312',
-    cv: '', // TODO(juanes): /cv.pdf — colocar el archivo en public/
+    /** Se genera con `python scripts/cv/build_cv.py`. */
+    cv: '/cv.pdf',
     /** Repositorio de este sitio, para el colofón del pie. */
     source: 'https://github.com/BobbyTarantino099/Portfolio',
   },

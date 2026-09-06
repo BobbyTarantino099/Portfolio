@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Juan Esteban Arenas — Data Analyst</title>
+
+<!--
+  El CV, en un solo archivo editable. `build_cv.py` lo imprime a public/cv.pdf.
+
+  Formato ATS: una sola columna, sin tablas, sin cajas de texto, sin iconos, sin
+  foto y sin gráficos. Los parsers leen el DOM en orden, así que todo lo que
+  desplaza cosas visualmente (las fechas a la derecha) se hace con flexbox, que
+  no reordena nada. Encabezados <h2> reales y listas <ul> reales: un ATS los usa
+  para segmentar el documento, y un <div> con estilo de título no le dice nada.
+
+  Tipografía y color son los del sitio (src/styles/global.css) para que el CV y
+  el portafolio se lean como una sola pieza.
+-->
+
+<style>
+/* FUENTES */
+
+:root {
+  --ink: #1a1815;
+  --ink-soft: #5a564c;
+  --rule: #ddd9cf;
+  --accent: #1f5fa8;
+
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Papel A4. Los márgenes son los del CSS de impresión de los reportes técnicos:
+   suficientes para que ninguna impresora recorte, sin regalar ancho de línea. */
+@page {
+  size: A4;
+  margin: 14mm 13mm;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 9.9pt;
+  line-height: 1.38;
+  color: var(--ink);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fuera de la impresión el archivo se puede abrir en el navegador para
+   revisarlo; esto le da el ancho de la caja de A4 y algo de aire. */
+@media screen {
+  body { padding: 14mm 13mm; max-width: 184mm; margin-inline: auto; }
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* --- Cabecera ----------------------------------------------------------- */
+
+.name {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 22pt;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.role {
+  margin: 2.5pt 0 0;
+  font-size: 10.4pt;
+  color: var(--ink-soft);
+}
+
+/* Dos líneas, y el reparto es deliberado: dónde estás y cómo te escriben arriba,
+   los tres perfiles abajo. Dejarlo como un párrafo corrido lo partía por donde
+   cayera y el último enlace quedaba huérfano. Sigue siendo texto plano en una
+   sola columna, separado por puntos medios, que es lo que un parser lee bien. */
+.contact {
+  margin: 6pt 0 0;
+  padding-top: 6pt;
+  border-top: 1px solid var(--rule);
+  font-size: 8.9pt;
+  color: var(--ink-soft);
+}
+
+.contact p { margin: 0; }
+.contact p + p { margin-top: 2pt; }
+
+/* --- Secciones ---------------------------------------------------------- */
+
+h2 {
+  font-family: var(--font-sans);
+  font-size: 8.2pt;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 11pt 0 0;
+  padding-bottom: 3pt;
+  border-bottom: 1px solid var(--rule);
+  /* Un título no se queda solo al final de la página. */
+  page-break-after: avoid;
+}
+
+section > *:first-child + * { margin-top: 7pt; }
+
+.summary {
+  margin: 7pt 0 0;
+  color: var(--ink);
+}
+
+/* --- Experiencia -------------------------------------------------------- */
+
+.job { margin-top: 8pt; }
+.job:first-of-type { margin-top: 7pt; }
+
+/* Flexbox, no tabla: el orden del DOM (puesto, empresa, fechas) es el orden en
+   que lo lee el ATS, y visualmente la fecha queda a la derecha. */
+.job-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10pt;
+}
+
+.job-title {
+  font-size: 10.4pt;
+  font-weight: 600;
+  margin: 0;
+}
+
+.job-org {
+  margin: 1pt 0 0;
+  color: var(--ink-soft);
+}
+
+.dates {
+  flex: none;
+  font-size: 8.9pt;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+ul {
+  margin: 4pt 0 0;
+  padding-left: 13pt;
+}
+
+li { margin-top: 2pt; }
+
+/* --- Bloques etiquetados (skills, certificaciones) ---------------------- */
+
+.rows { margin-top: 6pt; }
+
+.row {
+  display: flex;
+  gap: 8pt;
+  margin-top: 3pt;
+}
+
+.row dt {
+  flex: none;
+  width: 74pt;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.row dd { margin: 0; }
+
+dl { margin: 0; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1 class="name">Juan Esteban Arenas</h1>
+  <p class="role">Data analyst</p>
+  <div class="contact">
+    <p>Bucaramanga, Colombia (UTC&minus;5) &middot; juanesa2002@gmail.com</p>
+    <p>
+      <a href="https://juanesportfolio.com">juanesportfolio.com</a> &middot;
+      <a href="https://www.linkedin.com/in/juan-a-702389312">linkedin.com/in/juan-a-702389312</a> &middot;
+      <a href="https://github.com/BobbyTarantino099">github.com/BobbyTarantino099</a>
+    </p>
+  </div>
+</header>
+
+<section>
+  <h2>Summary</h2>
+  <p class="summary">
+    Data analyst working on international banking portfolios, where the job is usually to make a
+    number both correct and readable by someone three timezones away. Five years building ETL
+    pipelines, financial reporting automation and executive dashboards on Python, SQL and Power BI.
+    I turn business questions into defensible recommendations, and document the process well enough
+    that someone else can check it.
+  </p>
+</section>
+
+<section>
+  <h2>Experience</h2>
+
+  <div class="job">
+    <div class="job-head">
+      <div>
+        <p class="job-title">Data Analyst (Financial Analyst)</p>
+        <p class="job-org">Connext Global Solutions &middot; Bucaramanga, Colombia</p>
+      </div>
+      <p class="dates">Oct 2024 &ndash; Present</p>
+    </div>
+    <ul>
+      <li>
+        Automated the generation of financial statements, waterfall models and cash-flow reports
+        with Python, Advanced Excel and Power Query, removing the manual assembly those reports
+        required every cycle.
+      </li>
+      <li>
+        Built and maintain the executive dashboards &mdash; quarterly KPIs, payment distribution and
+        covenant compliance &mdash; that stakeholders across several regions read without an analyst
+        in the room.
+      </li>
+      <li>
+        Ingest and transform origination data into an Azure SQL database, keeping the data intact
+        end to end across the pipeline.
+      </li>
+      <li>
+        Track financial covenants and payment allocations to cross-border originators, ensuring
+        compliance with contractual obligations across international portfolios.
+      </li>
+    </ul>
+  </div>
+
+  <div class="job">
+    <div class="job-head">
+      <div>
+        <p class="job-title">Data Analyst</p>
+        <p class="job-org">Petrozones &middot; Bucaramanga, Colombia</p>
+      </div>
+      <p class="dates">Apr 2021 &ndash; Dec 2023</p>
+    </div>
+    <ul>
+      <li>
+        Developed the Python ETL that extracted operational data from APIs and CSV files, cutting
+        manual data entry by 50%.
+      </li>
+      <li>
+        Designed and tuned the MySQL schemas and queries behind it, for faster retrieval as the data
+        grew.
+      </li>
+      <li>
+        Built interactive Power BI dashboards combining several sources, plus weekly business
+        reports in Excel for operations and management.
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <div class="job">
+    <div class="job-head">
+      <div>
+        <p class="job-title">BSc in Computer and Information Systems</p>
+        <p class="job-org">Universidad Aut&oacute;noma de Bucaramanga (UNAB) &middot; Colombia</p>
+      </div>
+      <p class="dates">Expected Dec 2026</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Skills</h2>
+  <dl class="rows">
+    <div class="row">
+      <dt>Technical</dt>
+      <dd>
+        Python (pandas), SQL (Azure SQL, MySQL, DuckDB), Power BI (DAX), Advanced Excel (Power
+        Query), ETL pipeline design and automation, data modeling, MongoDB
+      </dd>
+    </div>
+    <div class="row">
+      <dt>Practice</dt>
+      <dd>
+        Stakeholder management, cross-functional collaboration, data governance, reproducible
+        analysis, process improvement
+      </dd>
+    </div>
+    <div class="row">
+      <dt>Languages</dt>
+      <dd>Spanish (native), English (C1)</dd>
+    </div>
+  </dl>
+</section>
+
+<section>
+  <h2>Certifications</h2>
+  <dl class="rows">
+    <div class="row">
+      <dt>Jul 2026</dt>
+      <dd>Google Data Analytics Professional Certificate &mdash; Google</dd>
+    </div>
+    <div class="row">
+      <dt>Nov 2024</dt>
+      <dd>Financial Analysis and Financial Modeling using MS Excel &mdash; Udemy</dd>
+    </div>
+    <div class="row">
+      <dt>Mar 2022</dt>
+      <dd>Google Cloud Essentials &mdash; Google</dd>
+    </div>
+  </dl>
+</section>
+
+</body>
+</html>

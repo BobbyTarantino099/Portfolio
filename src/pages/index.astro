@@ -104,10 +104,16 @@ const latestNote = notes[0];
 
   /* `auto-fill` en vez de `auto-fit`: con auto-fit una sola tarjeta se estiraría
      a todo el ancho y parecería un error de maquetación. Así conserva su tamaño
-     y la rejilla se llena sola conforme entren más casos. */
+     y la rejilla se llena sola conforme entren más casos.
+
+     El `min()` del mínimo no es adorno: 20rem son 320 px, y en un viewport de
+     320 px la columna no cabía junto a los 24 px de margen a cada lado, así que
+     las tarjetas se salían 24 px por la derecha. Medido a 320 px: scrollWidth
+     344 contra clientWidth 320. Con `min(20rem, 100%)` la columna nunca puede
+     ser más ancha que su contenedor. */
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 24rem));
+    grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 24rem));
     gap: var(--space-m);
   }
 

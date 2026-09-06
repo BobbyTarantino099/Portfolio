@@ -3,6 +3,9 @@ node_modules/
 dist/
 .astro/
 
+# El HTML con las fuentes incrustadas que build_cv.py imprime; se regenera.
+scripts/cv/cv.render.html
+
 # Entorno
 .env
 .env.production

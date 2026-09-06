@@ -124,7 +124,13 @@ const href = `/cases/${entry.id}/`;
     padding-top: var(--space-2xs);
   }
 
+  /* `.tag` lleva `white-space: nowrap`, que es lo correcto para «SQL» o
+     «DuckDB» pero no para esta píldora: la escala es una frase entera y en
+     móvil no cabe en una línea. Medido a 390 px: la de fútbol pide 311 px
+     donde la tarjeta ofrece 292, y el `overflow: hidden` de la tarjeta se la
+     comía por la derecha. Que envuelva. */
   .scale {
     color: var(--ink-soft);
+    white-space: normal;
   }
 </style>
