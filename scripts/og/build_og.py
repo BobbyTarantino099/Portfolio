@@ -202,6 +202,10 @@ def html_caso(datos, figura_b64, fuentes):
     # Un titular largo a 52px se come el aire del pie. El salto es de un punto y
     # solo para los que lo necesitan: los cortos no tienen por qué encoger.
     tamano = 44 if len(datos['title']) > 78 else 52
+    # El navegador corta en los guiones: "best-received" acababa partido en dos
+    # renglones y se leía como dos palabras. Cada palabra compuesta va entera.
+    titular = re.sub(r'(\w+(?:-\w+)+)', r'<span style="white-space: nowrap">\1</span>',
+                     datos['title'])
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 {ESTILO.replace('{FUENTES}', fuentes)}
 h1 {{ font-size: {tamano}px; }}
@@ -209,7 +213,7 @@ h1 {{ font-size: {tamano}px; }}
   <div class="texto">
     <div>
       <p class="eyebrow">{datos['domain']}</p>
-      <h1>{datos['title']}</h1>
+      <h1>{titular}</h1>
     </div>
     <div class="pie">
       <span class="mono">J</span>

@@ -1,6 +1,6 @@
 ---
-title: "On Steam, the cheapest price band has the worst reception across all 10 genres"
-summary: "Games priced under a real $3.25 systematically get the worst reception in their genre. The best reception sits at $6.46-$12.36 — never the cheapest, and not always the most expensive either. Based on that, I recommend concentrating due diligence on Adventure, Indie and Casual."
+title: "On Steam, the cheapest price band is never the best-received, in any of 10 genres"
+summary: "Across 10 Steam genres, games priced under a real $3.25 never get the best reception, and in 9 of them they get the worst. The pattern is clearest among older games; among recent ones it holds only in Adventure, Indie and Casual — the three genres I recommend for due diligence first."
 hero: "./images/01-price-band-vs-best-band.png"
 heroAlt: "Horizontal bar chart comparing each genre's cheapest price band against its best band. In all 10 genres the best band's median review score is higher than the cheapest band's, by 2.5 to 5.0 percentage points."
 date: 2026-07-28
@@ -13,7 +13,7 @@ report:
   href: "/reports/steam-price-reception.pdf"
   pages: 9
 featured: true
-demonstrates: "Turning an investment question into a pricing-and-sentiment analysis on a dataset with a real structural flaw — not trivial nulls, but a broken header that misaligns columns — enriched with a second source (CPI-U) to compare prices across 29 years in real dollars. The part I most want to show is the one that is usually missing: ruling out the obvious alternative explanation before publishing the finding."
+demonstrates: "Turning an investment question into a pricing-and-sentiment analysis on a dataset with a real structural flaw — not trivial nulls, but a broken header that misaligns columns — enriched with a second source (CPI-U) to compare prices across 29 years in real dollars. The part I most want to show is the one that is usually missing: testing the obvious alternative explanation before publishing the finding, and reporting what it changed."
 ---
 
 ## Context
@@ -44,7 +44,7 @@ in either source.
 
 - **No causality.** The pattern is a descriptive correlation. The strongest alternative reading —
   that studios charging more also invest more in production — cannot be ruled out with this data.
-  What I did rule out with evidence is that it's an age artefact.
+  What I did test is game age: it explains part of the pattern (see finding 4).
 - **No revenue or sales data.** `estimated_owners` comes as SteamSpy-estimated ranges, not
   Valve-confirmed figures, and was not used as a metric. This case speaks to reception, not
   profitability.
@@ -76,17 +76,18 @@ to end.
 
 Count reconciliation: 125,855 − 2 (future release date) − 0 (duplicates) − 8,423 (no genre) =
 **117,430**, verified with an `assert` in the script. Final analysis base: 9,048 paid games with
-≥500 reviews.
+≥500 reviews; 8,998 of them carry at least one of the 10 real genres, and those are the games
+behind the genre tables and figures.
 
 ## Findings
 
-### 1. The cheapest band has the worst reception in all 10 genres, without exception
+### 1. The cheapest band is never the best, in any of the 10 genres
 
 ![Horizontal bar chart comparing each genre's cheapest price band against its best band, showing the best band ahead by 2.5 to 5.0 percentage points in every genre.](./images/01-price-band-vs-best-band.png)
 
 The median positive-review share in Q1 (≤$3.25 real) ranges from 76.0% in Massively Multiplayer
-to 86.3% in Casual, and across all ten genres it is the lowest or tied for lowest in its genre.
-There is not a single genre where the cheapest band gets the best reception.
+to 86.3% in Casual. In none of the ten genres is it the best band, and in nine it is the worst.
+The exception is Massively Multiplayer, where Q1 comes second, ahead of Q3 and Q4 (see finding 5).
 
 ### 2. The peak sits at mid-to-high prices, not the highest price
 
@@ -96,8 +97,9 @@ Where each genre peaks:
 
 - **Q3 ($6.46–$12.36)** — Action, Indie, Simulation, Casual and Strategy.
 - **Q4 (>$12.36)** — Adventure, Racing, Sports and RPG.
+- **Q2 ($3.25–$6.46)** — Massively Multiplayer, the exception (see finding 5).
 
-No genre has its best reception in Q1 or Q2. That rules out the simplistic "more expensive is
+No genre has its best reception in Q1. That rules out the simplistic "more expensive is
 always better" reading too: in half the genres, the most expensive band already trails Q3.
 
 ### 3. The effect is real but moderate: 2.50 to 5.04 percentage points
@@ -116,13 +118,16 @@ Three genres combine the best effect, volume and absolute reception:
 | Indie | 5,561 | 86.7% |
 | Casual | 2,230 | 88.2% |
 
-### 4. Not an age effect: the pattern holds for both new and old games
+### 4. Age explains part of it: among recent games, the pattern holds in only three genres
 
-![Four side-by-side bar charts for Adventure, Indie, Casual and Action, each splitting recent games from older ones across the four price bands, with the cheapest band trailing in both age groups.](./images/04-age-control.png)
+![Two panels of dot strips, older games and recent games, one row per genre, with each price band's median review score as a dot. Among older games the cheapest band is the leftmost dot in all 9 genres with enough data; among recent games only in Adventure, Casual and Indie, and in RPG and Sports it edges ahead.](./images/04-age-control.png)
 
-The obvious objection is that cheap games are simply the old ones. It doesn't hold: the
-correlation between age and reception is -0.087 (practically null), and when the table is
-repeated splitting recent games from older ones, "Q1 is the worst band" appears in both groups.
+The obvious objection is that cheap games are simply the old ones. It is partly right. Splitting
+games at the median age (6 years), among older games Q1 comes last in all 9 genres with enough
+data. Among recent games it comes last only in Adventure, Indie and Casual; in the other six the
+gap mostly closes, and in RPG and Sports Q1 even edges ahead, by 1 point or less. The overall
+correlation between age and reception is weak (−0.087), but the split shows that age changes the
+pattern. The finding is solid for older games, and for recent ones it is limited to three genres.
 
 ### 5. Massively Multiplayer is the exception, and is reported as such
 
@@ -131,12 +136,16 @@ best band is Q2), has the lowest median of the ten across all four bands (74.8%-
 smallest n in the base (176 games). The evidence is weak, so it is neither recommended nor
 dismissed: it is documented as insufficient.
 
+*Corrected on 2026-10-11: an earlier version said the cheapest band was the worst in all 10
+genres and that age played no role. Both overstated the data; see the
+[repository's log](https://github.com/BobbyTarantino099/steam-price-reception/blob/main/CASO.md).*
+
 ## Recommendations
 
 | # | Recommendation | Evidence | Impact | Effort |
 |---|---|---|---|---|
-| **R1** | Concentrate next cycle's due diligence on **Adventure, Indie and Casual** | The three highest reception medians (86.2 / 86.7 / 88.2%) + price-band effect of 3.31-5.04 p.p. + sufficient target volume | High | Low |
-| **R2** | Add the **catalogue's position in the price quartiles** to screening; flag studios with >50% in Q1 for review | Q1 is the worst band across all 10 genres; the pattern survives the age control | Medium | Low |
+| **R1** | Concentrate next cycle's due diligence on **Adventure, Indie and Casual** | The three highest reception medians (86.2 / 86.7 / 88.2%) + price-band effect of 3.31-5.04 p.p. + sufficient target volume + the only three genres where the pattern survives among recent games | High | Low |
+| **R2** | Add the **catalogue's position in the price quartiles** to screening; flag studios with >50% in Q1 for review | Q1 is never the best band and is the worst in 9 of 10 genres; the signal is clearest among older catalogues | Medium | Low |
 | **R3** | **Deprioritise Massively Multiplayer** this cycle; Sports and Racing as "insufficient evidence" | MMO: 76.4% median, non-monotonic pattern, n=176. Sports (329) and Racing (338) below the n<350 threshold | Medium | Low |
 
 All three are low-effort because all three are rules layered on a process the fund already runs.
@@ -176,8 +185,10 @@ Turning an investment question into a pricing-and-sentiment analysis, on a datas
 structural flaw — not trivial nulls, but a broken header that misaligns columns — and combining
 it with a second source (CPI-U) to compare prices across 29 years in real dollars.
 
-What I most want to show here is the part that's usually missing: **ruling out the alternative
-explanation before publishing the finding**. The obvious objection to "cheap games get worse
-reception" is that cheap games are the old ones. I checked, it doesn't hold, and that check is in
-the repository with its code. And the genre that didn't fit the conclusion — Massively
-Multiplayer — is reported as insufficient evidence instead of being left out.
+What I most want to show here is the part that's usually missing: **testing the alternative
+explanation before publishing the finding, and saying what it changed**. The obvious objection to
+"cheap games get worse reception" is that cheap games are the old ones. I checked, and it is
+partly right: the pattern is solid among older games and, among recent ones, survives in only
+three genres — the same three I recommend. That check is in the repository with its code. And
+the genre that didn't fit — Massively Multiplayer — is reported as insufficient evidence instead
+of being left out.
