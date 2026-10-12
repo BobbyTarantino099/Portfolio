@@ -1,0 +1,21 @@
+---
+/**
+ * Texto con las palabras compuestas enteras. El navegador corta una línea después de
+ * cualquier guion, así que "best-received" podía quedar partido en dos renglones y
+ * leerse como dos palabras. En un titular a tamaño grande pasa a casi cualquier ancho.
+ * El resto del texto corta como siempre.
+ */
+interface Props {
+  text: string;
+}
+
+const partes = Astro.props.text.split(/(\w+(?:-\w+)+)/);
+---
+
+{partes.map((parte, i) => (i % 2 === 1 ? <span class="whole">{parte}</span> : parte))}
+
+<style>
+  .whole {
+    white-space: nowrap;
+  }
+</style>

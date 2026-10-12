@@ -74,6 +74,13 @@ def main():
             shutil.copyfile(origen[prefijo], destino[prefijo])
             print(f'  {origen[prefijo].name}  ->  {destino[prefijo].name}')
 
+        # La portada del video no lleva prefijo: no es una figura del hallazgo, y el
+        # emparejamiento de arriba no debe contarla. Se copia solo si el caso tiene video.
+        portada = CASOS / slug / 'video' / 'portada.jpg'
+        if portada.is_file():
+            shutil.copyfile(portada, CONTENIDO / slug / 'images' / 'video-poster.jpg')
+            print(f'  video/{portada.name}  ->  video-poster.jpg')
+
     return 0
 
 

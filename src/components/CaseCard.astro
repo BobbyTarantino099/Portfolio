@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import NoBreakHyphens from './NoBreakHyphens.astro';
 
 interface Props {
   entry: CollectionEntry<'cases'>;
@@ -22,7 +23,7 @@ const href = `/cases/${entry.id}/`;
     {/* El enlace del titular se estira sobre toda la tarjeta con ::after: la
         tarjeta entera es clicable sin duplicar enlaces en el árbol de
         accesibilidad. Por eso la imagen va con alt vacío y aria-hidden. */}
-    <h2><a href={href}>{title}</a></h2>
+    <h2><a href={href}><NoBreakHyphens text={title} /></a></h2>
 
     <p class="summary">{summary}</p>
 

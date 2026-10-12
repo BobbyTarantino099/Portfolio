@@ -13,6 +13,10 @@ report:
   href: "/reports/steam-price-reception.pdf"
   pages: 9
 featured: true
+video:
+  youtube: "zHiZ3W4nJxE"
+  seconds: 68
+  poster: "./images/video-poster.jpg"
 demonstrates: "Turning an investment question into a pricing-and-sentiment analysis on a dataset with a real structural flaw — not trivial nulls, but a broken header that misaligns columns — enriched with a second source (CPI-U) to compare prices across 29 years in real dollars. The part I most want to show is the one that is usually missing: testing the obvious alternative explanation before publishing the finding, and reporting what it changed."
 ---
 

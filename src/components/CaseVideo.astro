@@ -1,0 +1,151 @@
+---
+/**
+ * Video del caso, con fachada: hasta que el lector pulsa play, esto es una imagen y un
+ * botón, y la página no pide nada a YouTube. Al pulsar, el botón se cambia por el
+ * reproductor de `youtube-nocookie.com`, que no deja cookies hasta que el video empieza.
+ *
+ * La razón es el peso: el reproductor incrustado son ~1 MB de scripts de terceros, y la
+ * mayoría de los lectores viene a leer, no a ver. Que lo pague solo quien lo pide.
+ *
+ * Sin JavaScript, el botón es un enlace normal al video en YouTube: nadie se queda sin él.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  youtube: string;
+  seconds: number;
+  poster: ImageMetadata;
+  title: string;
+}
+
+const { youtube, seconds, poster, title } = Astro.props;
+const watchUrl = `https://youtu.be/${youtube}`;
+const embedUrl = `https://www.youtube-nocookie.com/embed/${youtube}?autoplay=1&rel=0`;
+---
+
+<figure class="case-video" id="video">
+  <a
+    class="case-video-play"
+    href={watchUrl}
+    data-embed={embedUrl}
+    data-title={title}
+    aria-label={`Play the video: ${title} (${seconds} seconds)`}
+  >
+    <Image
+      src={poster}
+      alt=""
+      widths={[640, 1024, 1280]}
+      sizes="(max-width: 62rem) 100vw, 56rem"
+      loading="eager"
+    />
+    <span class="case-video-button" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+      The case in {seconds} seconds
+    </span>
+  </a>
+  <figcaption>
+    The case in {seconds} seconds, narrated. Every number on screen comes from the case's own files.
+  </figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.case-video-play').forEach((enlace) => {
+    enlace.addEventListener('click', (evento) => {
+      evento.preventDefault();
+      const marco = document.createElement('iframe');
+      marco.src = enlace.dataset.embed!;
+      marco.title = enlace.dataset.title!;
+      marco.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      marco.allowFullscreen = true;
+      marco.className = 'case-video-frame';
+      enlace.replaceWith(marco);
+      marco.focus();
+    });
+  });
+</script>
+
+<style>
+  .case-video {
+    margin: 0 0 var(--space-l);
+  }
+
+  /* El enlace y el iframe que lo sustituye ocupan exactamente la misma caja 16:9: al pulsar
+     play no salta nada de la página. */
+  .case-video-play,
+  .case-video :global(.case-video-frame) {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--figure-bg);
+  }
+
+  .case-video-play img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+  }
+
+  .case-video-play:hover img,
+  .case-video-play:focus-visible img {
+    opacity: 0.85;
+  }
+
+  /* Fijo en tinta oscura sobre la portada, que siempre es clara: el fotograma no cambia con
+     el tema del lector, así que el botón tampoco. */
+  .case-video-button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.15rem 0.7rem 0.9rem;
+    border-radius: 999px;
+    background: #1a1815;
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 0.18);
+  }
+
+  .case-video-play:hover .case-video-button,
+  .case-video-play:focus-visible .case-video-button {
+    background: #1f5fa8;
+  }
+
+  /* En un teléfono la portada mide ~340 px de ancho y el botón con texto tapaba el contador
+     entero. Queda el círculo solo, en el hueco entre el texto y la rejilla; la duración ya la
+     dice el pie, y el nombre accesible lo lleva el enlace. */
+  @media (max-width: 30rem) {
+    .case-video-button {
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      justify-content: center;
+      font-size: 0;
+    }
+
+    .case-video-button svg {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+    }
+  }
+
+  .case-video figcaption {
+    margin-top: var(--space-2xs);
+    color: var(--ink-soft);
+    font-size: 0.875rem;
+    max-width: var(--measure);
+  }
+</style>

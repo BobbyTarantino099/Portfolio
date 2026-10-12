@@ -107,6 +107,27 @@ const cases = defineCollection({
         })
         .optional(),
 
+      /**
+       * Video corto del caso, alojado en YouTube (oculto). Se hace en el repo del caso, en
+       * `video/`, y aqui solo cruza lo que la pagina necesita: el id, la duracion y la portada.
+       *
+       * OPCIONAL, por el mismo motivo que `explorer` y `report`: lo tiene un caso, y un campo
+       * obligatorio habria roto el build de los otros dos.
+       *
+       * En la pagina, el video ocupa el sitio de `hero`; `hero` sigue mandando en las tarjetas.
+       *
+       * `poster` es un fotograma del propio video, servido desde el sitio. La pagina no carga
+       * nada de YouTube hasta que el lector pulsa play: sin eso, cada visita pagaria ~1 MB de
+       * scripts de terceros por un video que la mayoria no va a ver.
+       */
+      video: z
+        .object({
+          youtube: z.string().regex(/^[A-Za-z0-9_-]{11}$/, 'el id de YouTube son 11 caracteres'),
+          seconds: z.number().int().positive(),
+          poster: image(),
+        })
+        .optional(),
+
       /** Que demuestra este caso que los demas no. Alimenta la matriz de cobertura. */
       demonstrates: z.string().min(1),
     }),

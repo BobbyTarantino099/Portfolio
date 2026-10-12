@@ -4,6 +4,8 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import ArticleRail from '../../components/ArticleRail.astro';
 import VintageExplorer from '../../components/VintageExplorer.astro';
+import CaseVideo from '../../components/CaseVideo.astro';
+import NoBreakHyphens from '../../components/NoBreakHyphens.astro';
 
 export async function getStaticPaths() {
   const cases = await getCollection('cases');
@@ -32,6 +34,9 @@ const meta = [
   { label: 'Scale', value: d.scale },
   { label: 'Published', value: dateLabel },
   ...(d.repo ? [{ label: 'Evidence', value: 'Repository', href: d.repo }] : []),
+  ...(d.video
+    ? [{ label: 'Video', value: 'The case on video', href: '#video', hint: `${d.video.seconds} s` }]
+    : []),
   ...(d.report
     ? [
         {
@@ -63,18 +68,33 @@ const meta = [
     <article>
       <header class="case-head">
         <p class="eyebrow">{d.domain}</p>
-        <h1>{d.title}</h1>
+        <h1><NoBreakHyphens text={d.title} /></h1>
         <p class="lede measure">{d.summary}</p>
 
-        <div class="figure-surface hero">
-          <Image
-            src={d.hero}
-            alt={d.heroAlt}
-            widths={[640, 1024, 1440]}
-            sizes="(max-width: 62rem) 100vw, 56rem"
-            loading="eager"
-          />
-        </div>
+        {
+          /* Si el caso tiene video, el video ocupa el sitio de la figura principal, no se suma a
+             ella: los dos seguidos se leían como dos gráficos encadenados. La figura no se pierde
+             — sigue siendo la imagen de la tarjeta del índice y de la tarjeta OG (`hero`), y el
+             cuerpo la vuelve a mostrar en el hallazgo que la explica. */
+          d.video ? (
+            <CaseVideo
+              youtube={d.video.youtube}
+              seconds={d.video.seconds}
+              poster={d.video.poster}
+              title={d.title}
+            />
+          ) : (
+            <div class="figure-surface hero">
+              <Image
+                src={d.hero}
+                alt={d.heroAlt}
+                widths={[640, 1024, 1440]}
+                sizes="(max-width: 62rem) 100vw, 56rem"
+                loading="eager"
+              />
+            </div>
+          )
+        }
       </header>
 
       <div class="case-body">
