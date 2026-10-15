@@ -1,6 +1,6 @@
 ---
-title: "Football's transfer money is spreading out, not concentrating — and youth carries no premium"
-summary: "The industry treats both as settled: money pooling in fewer clubs, young players costing an ever-growing premium. Four transfer windows of deal-level data and a decade of FIFA's census contradict both. What is stable is who sells — 96 clubs were net sellers in all four seasons, where chance would have given 61."
+title: "Football's transfer money is spreading out, not concentrating — and youth carries no growing premium"
+summary: "The industry treats both as settled: money pooling in fewer clubs, young players costing an ever-growing premium. Four transfer windows of deal-level data and FIFA's census contradict both. What is stable is who sells — 96 clubs were net sellers in all four seasons, where chance would have given 61."
 hero: "./images/03-selling-is-structural.png"
 heroAlt: "Diverging bar chart showing how many clubs fall above or below what random role assignment would produce. Clubs that never sold and clubs that sold in all four seasons are over-represented by 15 and 35; the middle categories are under-represented by 34 and 28."
 date: 2026-08-15
@@ -13,6 +13,10 @@ report:
   href: "/reports/football-transfer-market.pdf"
   pages: 11
 featured: true
+video:
+  youtube: "krLbLdVGhXo"
+  seconds: 96
+  poster: "./images/video-poster.jpg"
 demonstrates: "Writing the hypothesis down before the analysis and publishing the result when the data contradicted it — on both axes. Underneath that: SQL on DuckDB over a scraped dataset whose history is rebuilt from surviving players, so its coverage thins backwards and by age, caught by reconciling it against FIFA's official census rather than trusting one source."
 ---
 
@@ -132,7 +136,7 @@ The measure names them:
 - **Never selling** — Chelsea (−€800m), Manchester United (−€672m) and Arsenal (−€637m) did not
   finish a single season as net sellers.
 
-### Youth carries no premium
+### Youth carries no growing premium
 
 An 18–23 player costs about what a 24–29 player costs, and that ratio does not escalate in either
 source over the period measured.
@@ -147,6 +151,9 @@ season, and hung on a single starting observation, so it did not survive checkin
 specifications and was withdrawn. What the evidence carries is parity and no escalation, and that
 is what is published.
 
+The claim holds for 2022–2025, the years both sources cover. Further back, FIFA's age series is
+too uneven to carry it: 0.69 in 2018, 1.00 in 2019, and no fees by band in 2020–21.
+
 ### But the young market runs at two speeds
 
 Inside the 18–23 bracket, deals of €40m or more are 2.3% of transactions and take 23.8% of
@@ -157,6 +164,11 @@ everything spent on the bracket, while the 71% priced under €5m account for 15
 The headline signings are real and concentrated — Chelsea alone spent €688m across ten such deals,
 Liverpool €462m, PSG €430m, and seven of the top ten buyers are English — but they sit on top of a
 long, cheap tail, and it is the tail that moves the aggregate.
+
+*Corrected on 2026-10-15: an earlier version said that a decade of FIFA's census contradicts both
+beliefs, and that youth "carries no premium". The census supports the first; the youth claim holds
+for 2022–2025, and what it shows is no growing premium. See the
+[repository's log](https://github.com/BobbyTarantino099/football-transfer-market/blob/main/CASO.md).*
 
 ## Recommendations
 
